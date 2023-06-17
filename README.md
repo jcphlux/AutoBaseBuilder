@@ -1,3 +1,4 @@
+### ALPHA DO NOT USE... THIS IS A WIP
 # JCPhlux Auto Base Builder Mod - 7 Days to Die (A21) Addon
 
 A new block that will automatically build your base from a prefab 
