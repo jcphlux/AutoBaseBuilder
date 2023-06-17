@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <Name value="JCPhluxAutoBaseBuilder" />
+  <DisplayName value="JCPhlux Auto Base Builder Block" />
+  <Description value="Auto Builds blocks in your claim vicinity based on selected Prefab" />
+  <Website value="https://github.com/jcphlux/AutoBaseBuilder" />
+  <Author value="JCphlux" />
+  <Version value="2023.6.17.941" />
+</xml>
