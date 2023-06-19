@@ -3,4 +3,7 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
+  <PropertyGroup>
+    <ReferencePath>C:\7D2D\Custom\MyMods\7DaysToDie_Data\Managed\</ReferencePath>
+  </PropertyGroup>
 </Project>

@@ -101,7 +101,7 @@
     <Compile Include="Harmony\BlockAutoBaseBuilder.cs" />
     <Compile Include="Harmony\JCPhluxAutoBaseBuilder.cs" />
     <Compile Include="Harmony\TileEntityAutoBaseBuilder.cs" />
-    <Compile Include="Harmony\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Library\ModXmlPatcher.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +157,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /y $(ProjectDir)\ModInfo.xml .
-robocopy . C:\7D2D\Custom\MyMods\Mods\$(AssemblyName) /E /COPY:DAT
+robocopy . C:\7D2D\Custom\MyMods\Mods\$(TargetName) /E /COPY:DAT
 exit 0</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
