@@ -1,0 +1,76 @@
+﻿<configs patcher-version="4">
+
+  <append xpath="/windows">
+    <window name="jcphluxBlockAutoBaseBuilderPrefabList" anchor="CenterTop" pos="-320,-80" width="300" height="920" controller="PrefabList" cursor_area="true">
+      <panel name="content" depth="1" pivot="center" disableautobackground="true" >
+        <sprite depth="3" name="border" sprite="menu_empty3px" pos="0,0" color="[black]" type="sliced" fillcenter="false" globalopacity="true" globalopacitymod="0.9" />
+        <sprite depth="1" name="backgroundMain" sprite="menu_empty3px" pos="2,-2" height="916" width="296" color="[darkGrey]" type="sliced" fillcenter="true" globalopacity="true" globalopacitymod="0.65" />
+
+        <rect name="groups" pos="0,0" height="220" controller="PrefabGroupList" clear_selection_on_open="false">
+          <rect depth="4" name="searchControls" height="44" pos="0,-0">
+            <sprite depth="8" name="backgroundMain" sprite="menu_empty2px" color="[black]" type="sliced" fillcenter="false" />
+
+            <sprite depth="4" name="searchIcon" style="icon30px" pos="5,-22" sprite="ui_game_symbol_search" pivot="Left"/>
+            <textfield name="searchInput" depth="5" pos="40,-22" width="160" height="30" pivot="Left" />
+
+            <panel pos="202,0" width="98" height="43" disableautobackground="true">
+              <pager name="pager" pos="1,-6" primary_pager="false" />
+            </panel>
+          </rect>
+
+          <grid name="list" depth="2" rows="5" cols="2" pos="0,-44" height="150" cell_width="150" cell_height="30" repeat_content="true" arrangement="vertical" >
+            <prefab_group_entry width="150" height="30" />
+          </grid>
+        </rect>
+
+        <rect name="files" pos="0,-200" height="346" controller="PrefabFileList" clear_selection_on_open="false" cursor_controllable="true">
+          <rect depth="4" name="searchControls" height="44" pos="0,-0">
+            <sprite depth="8" name="backgroundMain" sprite="menu_empty2px" color="[black]" type="sliced" fillcenter="false" />
+
+            <sprite depth="4" name="searchIcon" style="icon30px" pos="5,-22" sprite="ui_game_symbol_search" pivot="Left"/>
+            <textfield name="searchInput" depth="5" pos="40,-22" width="160" height="30" pivot="Left" />
+
+            <panel pos="202,0" width="98" height="43" disableautobackground="true">
+              <pager name="pager" pos="1,-6" primary_pager="false" />
+            </panel>
+          </rect>
+
+          <grid name="list" depth="2" rows="11" cols="1" pos="0,-44" height="540" cell_width="300" cell_height="30" repeat_content="true" arrangement="vertical" >
+            <prefab_file_entry width="300" height="30" />
+          </grid>
+        </rect>
+
+        <panel name="previewFrame" depth="2" pos="3,-570" width="294" height="225" disableautobackground="true" snap="false">
+          <texture depth="2" name="prefabPreview" material="Materials/Transparent Colored" globalopacity="false"/>
+          <label depth="1" name="noPreview" pos="0, -110" width="300" height="28" text="No preview image" font_size="28" color="[red]" justify="center" pivot="left" />
+        </panel>
+
+        <rect name="prefabEditorButtons" visible="{is_prefab_editor}">
+          <grid name="buttons" pos="5, -800" cols="3" rows="2" width="290" cell_width="99" cell_height="40" arrangement="horizontal" repeat_content="false" >
+            <simplebutton name="btnLoad" depth="3" caption_key="xuiPrefabsLoad" tooltip_key="xuiPrefabsLoadTooltip" width="93" height="30" font_size="30" />
+            <simplebutton name="btnProperties" depth="3" caption_key="xuiPrefabsProperties" tooltip_key="xuiPrefabsPropertiesTooltip" width="93" height="30" font_size="30" />
+            <simplebutton name="btnSave" depth="3" caption_key="xuiPrefabsSave" tooltip_key="xuiPrefabsSaveTooltip" width="93" height="30" font_size="30" />
+
+            <simplebutton name="btnLoadIntoPrefab" depth="3" caption_key="xuiPrefabsLoadIntoPrefab" tooltip_key="xuiPrefabsLoadIntoPrefabTooltip" width="93" height="30" font_size="30" />
+            <simplebutton name="btnApplyLoadedPrefab" depth="3" caption_key="xuiPrefabsApplyLoadedPrefab" tooltip_key="xuiPrefabsApplyLoadedPrefabTooltip" width="93" height="30" font_size="30" />
+            <!--<simplebutton name="btnCleanOtherPrefabs" depth="3" caption_key="xuiPrefabsCleanOtherPrefabs" tooltip_key="xuiPrefabsCleanOtherPrefabsTooltip" width="93" height="30" font_size="30" />-->
+            <simplebutton name="btnLoadIntoClipboard" depth="3" caption_key="xuiPrefabsLoadIntoClipboard" tooltip_key="xuiPrefabsLoadIntoClipboardTooltip" width="93" height="30" font_size="30" />
+          </grid>
+
+          <simplebutton name="btnNew" pos="5, -870" pivot="TopLeft" depth="3" caption_key="xuiPrefabsNew" tooltip_key="xuiPrefabsNewTooltip" width="290" height="30" font_size="30" />
+        </rect>
+
+        <rect name="worldEditorButtons" visible="{# is_editmode and !is_prefab_editor}">
+          <grid name="buttons" pos="5, -800" cols="3" rows="2" width="290" cell_width="99" cell_height="40" arrangement="horizontal" repeat_content="false" >
+            <simplebutton name="btnWorldPlacePrefab" pivot="TopLeft" depth="3" caption_key="xuiWorldPrefabsPlace" tooltip_key="xuiWorldPrefabsPlaceTooltip" width="93" height="30" font_size="30" />
+            <simplebutton name="btnWorldReplacePrefab" pivot="TopLeft" depth="3" caption_key="xuiWorldPrefabsReplace" tooltip_key="xuiWorldPrefabsReplaceTooltip" width="93" height="30" font_size="30" />
+            <simplebutton name="btnWorldDeletePrefab" pivot="TopLeft" depth="3" caption_key="xuiWorldPrefabsDelete" tooltip_key="xuiWorldPrefabsDeleteTooltip" width="93" height="30" font_size="30" />
+            <simplebutton name="btnWorldApplyPrefabChanges" pivot="TopLeft" depth="3" caption_key="xuiWorldPrefabsApply" tooltip_key="xuiWorldPrefabsApplyTooltip" width="93" height="30" font_size="30" />
+            <simplebutton name="btnWorldRevertPrefabChanges" pivot="TopLeft" depth="3" caption_key="xuiWorldPrefabsRevert" tooltip_key="xuiWorldPrefabsRevertTooltip" width="93" height="30" font_size="30" />
+          </grid>
+        </rect>
+
+      </panel>
+    </window>
+  </append>
+</configs>

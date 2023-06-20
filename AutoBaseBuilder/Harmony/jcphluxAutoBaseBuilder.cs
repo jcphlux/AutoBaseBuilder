@@ -8,7 +8,7 @@ public class JCPhluxAutoBaseBuilder : IModApi
 	// Entry class for A20 patching
 	public void InitMod(Mod mod)
 	{
-		Log.Out("JCPhlux Harmony Patch: " + GetType().ToString());
+		Log.Out("JCPhlux AutoBaseBuilder Harmony Patch: " + GetType().ToString());
 		Harmony harmony = new Harmony(GetType().ToString());
 		harmony.PatchAll(Assembly.GetExecutingAssembly());
 	}

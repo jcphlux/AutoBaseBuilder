@@ -33,11 +33,14 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 	// Copied from LandClaim code
 	public Transform BoundsHelper;
 
-	// Some basic stats from searches
-	bool hadDamagedBlock = false;
+	// The selected prefab to be built
+    public PathAbstractions.AbstractedLocation prefabLocation;
+
+    // Some basic stats from searches
+    bool hadDamagedBlock = false;
 	bool hadBlockOutside = false;
 
-	private bool isOn;
+	private bool isOn;	
 
 	public bool IsOn
 	{
@@ -65,7 +68,10 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 		repairBlock = BlockValue.Air;
 		repairDamage = 0.0f;
 		damagePerc = 0.0f;
-	}
+
+        //PathAbstractions.AbstractedLocation x = PathAbstractions.PrefabsSearchPaths.GetLocation("PrefabTest");
+
+    }
 
 	public override TileEntityType GetTileEntityType() => (TileEntityType)242;
 
@@ -449,7 +455,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 				{
 					var player = GameManager.Instance?.World?.GetPrimaryPlayer();
 					string msg = Localization.Get("jcphluxBlockAutoBaseBuilderMissed");
-					if (string.IsNullOrEmpty(msg)) msg = "Claim Auto Repair could use {0}";
+					if (string.IsNullOrEmpty(msg)) msg = "Base Auto Builder could use {0}";
 					msg = string.Format(msg, ItemClass.GetItemClass(lastMissingItem).GetLocalizedItemName());
 					GameManager.Instance.ChatMessageServer(
 						(ClientInfo)null,

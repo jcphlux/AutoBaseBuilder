@@ -1,0 +1,8 @@
+﻿<configs patcher-version="4">
+
+  <append xpath="/xui/ruleset[@name='default']">
+    <window_group name="jcphluxBlockAutoBaseBuilderPrefabList">
+      <window name="jcphluxBlockAutoBaseBuilderPrefabList"/>
+    </window_group>
+  </append>
+</configs>

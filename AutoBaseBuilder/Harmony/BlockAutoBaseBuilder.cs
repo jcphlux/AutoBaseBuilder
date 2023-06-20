@@ -171,18 +171,29 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
 	{
 		TileEntityAutoBaseBuilder tileEntity = _world.GetTileEntity(_clrIdx, _blockPos) as TileEntityAutoBaseBuilder;
 		BlockActivationCommand[] cmds = base.GetBlockActivationCommands(_world, _blockValue, _clrIdx, _blockPos, _entityFocusing);
-		Array.Resize(ref cmds, cmds.Length + 2);
-		cmds[cmds.Length - 2] = new BlockActivationCommand("take", "hand", false);
+		Array.Resize(ref cmds, cmds.Length + 3);
 
-		string cmd = tileEntity.IsOn ? "turn_claimautorep_off" : "turn_claimautorep_on";
-		cmds[cmds.Length - 1] = new BlockActivationCommand(cmd, "electric_switch", true);
+        cmds[cmds.Length - 2] = new BlockActivationCommand("take", "hand", false);
+        string activate_cmd = tileEntity.IsOn ? "turn_autobuild_off" : "turn_autobuild_on";
+		cmds[cmds.Length - 1] = new BlockActivationCommand(activate_cmd, "electric_switch", true);
 		if (this.CanPickup)
 			cmds[cmds.Length - 2].enabled = true;
 		else if ((double) EffectManager.GetValue(PassiveEffects.BlockPickup, _entity: _entityFocusing, tags: _blockValue.Block.Tags) > 0.0)
 			cmds[cmds.Length - 2].enabled = true;
 		else
 			cmds[cmds.Length - 2].enabled = false;
-		return cmds;
+
+        string prefablist_cmd = "select_prefab";
+        if (tileEntity.prefabLocation == null)
+        {
+            prefablist_cmd = Localization.Get("blockcommand_selected_prefab");
+            if (string.IsNullOrEmpty(prefablist_cmd)) prefablist_cmd = "Selected Prefab {0}";
+            prefablist_cmd = string.Format(prefablist_cmd, tileEntity.prefabLocation);
+
+        }
+        cmds[cmds.Length - 3] = new BlockActivationCommand(prefablist_cmd, "map_town", true);        
+
+        return cmds;
 	}
 
 	public override bool OnBlockActivated(
@@ -221,11 +232,17 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
 			return false;
 
 		}
-		else if (_commandName == "turn_claimautorep_off" || _commandName == "turn_claimautorep_on")
+		else if (_commandName == "turn_autobuild_off" || _commandName == "turn_autobuild_on")
 		{
 			tileEntity.IsOn = !tileEntity.IsOn;
 			return true;
 		}
+		else if (_commandName == "select_prefab")
+		{
+            LocalPlayerUI playerUi = (_player as EntityPlayerLocal).PlayerUI;
+            playerUi.windowManager.Open("jcphluxBlockAutoBaseBuilderPrefabList", true);
+            return true;
+        }
 		else {
 			return base.OnBlockActivated(_commandName, _world, _cIdx, _blockPos, _blockValue, _player);
 		}
