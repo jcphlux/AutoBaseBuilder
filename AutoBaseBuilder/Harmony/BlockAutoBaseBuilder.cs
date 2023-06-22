@@ -240,7 +240,7 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
 		else if (_commandName == "select_prefab")
 		{
             LocalPlayerUI playerUi = (_player as EntityPlayerLocal).PlayerUI;
-            playerUi.windowManager.Open("jcphluxBlockAutoBaseBuilderPrefabList", true);
+            playerUi.windowManager.Open("UiABBPrefabList", true);
             return true;
         }
 		else {

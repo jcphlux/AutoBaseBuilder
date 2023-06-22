@@ -9,8 +9,8 @@
     <ProjectGuid>{4069FB6B-DC75-4192-8208-1BF2C0EF7227}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoBaseBuilder</RootNamespace>
-    <AssemblyName>AutoBaseBuilder</AssemblyName>
+    <RootNamespace>JCPhluxAutoBaseBuilder</RootNamespace>
+    <AssemblyName>JCPhluxAutoBaseBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -99,8 +99,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Harmony\BlockAutoBaseBuilder.cs" />
+    <Compile Include="Harmony\Controllers\XUiC_UserDataPrefabList.cs" />
     <Compile Include="Harmony\JCPhluxAutoBaseBuilder.cs" />
     <Compile Include="Harmony\TileEntityAutoBaseBuilder.cs" />
+    <Compile Include="Harmony\Controllers\XUiC_UserDataPrefabFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Library\ModXmlPatcher.cs" />
   </ItemGroup>
@@ -182,4 +184,7 @@ exit 0</PostBuildEvent>
     </PropertyGroup>
     <Exec Command="powershell.exe .\UpdateXml.ps1 -XmlFilePath &quot;$(XmlFilePath)&quot; -AssemblyVersion &quot;$(VersionInfo)&quot;" />
   </Target>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
 </Project>

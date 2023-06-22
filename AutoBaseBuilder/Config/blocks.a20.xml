@@ -1,6 +1,6 @@
 <configs>
 
-	<append xpath="/blocks/block[@name='jcphluxBlockAutoBaseBuilder']">
+	<append xpath="/blocks/block[@name='JCPhluxBlockAutoBaseBuilder']">
 
 		<property name="UnlockedBy" value="perkAdvancedEngineering"/>
 

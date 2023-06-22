@@ -15,7 +15,7 @@
 			<ingredient name="resourcePaper" count="10"/>
 		</recipe>
 
-		<recipe name="jcphluxBlockAutoBaseBuilder" time="600"
+		<recipe name="JCPhluxBlockAutoBaseBuilder" time="600"
 				tags="learnable" area="ulmStationWorkbench_3">
 			<ingredient name="resourceForgedSteel" count="40"/>
 			<ingredient name="resourceMechanicalParts" count="40"/>

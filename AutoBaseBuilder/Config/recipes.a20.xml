@@ -1,7 +1,7 @@
 <configs>
 	<append xpath="/recipes">
 
-		<recipe name="jcphluxBlockAutoBaseBuilder" count="1"
+		<recipe name="JCPhluxBlockAutoBaseBuilder" count="1"
 				tags="perkAdvancedEngineering,learnable"
 				craft_area="workbench" material_based="false"
 				craft_time="600">

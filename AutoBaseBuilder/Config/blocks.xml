@@ -1,11 +1,11 @@
 <configs patcher-version="4">
 
 	<append xpath="/blocks">
-		<block name="jcphluxBlockAutoBaseBuilder">
+		<block name="JCPhluxBlockAutoBaseBuilder">
 
 			<property name="CreativeMode" value="Player"/>
 			<property name="Tags" value="safes,hardenedSafe"/>
-			<property name="Class" value="AutoBaseBuilder, AutoBaseBuilder"/>
+			<property name="Class" value="AutoBaseBuilder, JCPhluxAutoBaseBuilder"/>
 			<property name="CustomIcon" value="AutoBaseBuilder"/>
 			<property name="Material" value="Msteel"/>
 			<property name="StabilitySupport" value="true"/>

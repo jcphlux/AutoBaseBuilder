@@ -68,7 +68,8 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 		repairBlock = BlockValue.Air;
 		repairDamage = 0.0f;
 		damagePerc = 0.0f;
-
+		var prefabList = new XUiC_PrefabList();
+       // prefabList.
         //PathAbstractions.AbstractedLocation x = PathAbstractions.PrefabsSearchPaths.GetLocation("PrefabTest");
 
     }
