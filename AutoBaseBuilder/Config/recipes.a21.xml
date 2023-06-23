@@ -1,15 +1,14 @@
 <configs>
 	<append xpath="/recipes">
 
-		<recipe name="JCPhluxBlockAutoBaseBuilder" count="1"
+		<recipe name="JCPhluxBlockABB" count="1"
 				tags="learnable,workbenchCrafting"
 				area="workbench" material_based="false"
-				craft_time="600">
-			<ingredient name="resourceForgedSteel" count="40"/>
-			<ingredient name="resourceElectricParts" count="20"/>
-			<ingredient name="gunBotRoboticsParts" count="6"/>
+				craft_time="300">
+			<ingredient name="resourceForgedIron" count="100"/>
+      <ingredient name="resourceMechanicalParts" count="10"/>
+			<ingredient name="resourceElectricParts" count="5"/>
       <ingredient name="carBattery" count="1"/>
-      <ingredient name="solarCell" count="1"/>
     </recipe>
 
 	</append>

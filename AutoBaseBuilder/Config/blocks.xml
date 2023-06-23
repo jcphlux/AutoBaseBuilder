@@ -1,13 +1,13 @@
 <configs patcher-version="4">
 
 	<append xpath="/blocks">
-		<block name="JCPhluxBlockAutoBaseBuilder">
+		<block name="JCPhluxBlockABB">
 
 			<property name="CreativeMode" value="Player"/>
 			<property name="Tags" value="safes,hardenedSafe"/>
 			<property name="Class" value="AutoBaseBuilder, JCPhluxAutoBaseBuilder"/>
 			<property name="CustomIcon" value="AutoBaseBuilder"/>
-			<property name="Material" value="Msteel"/>
+			<property name="Material" value="Mmetal"/>
 			<property name="StabilitySupport" value="true"/>
 			<property name="Shape" value="ModelEntity"/>
 			<property name="Model" value="#@modfolder:Resources/AutoBaseBuilder.unity3d?AutoBaseBuilder"/>
@@ -16,7 +16,7 @@
 			<property name="LootList" value="storageCrate"/>
 			<property name="LPHardnessScale" value="8"/>
 			<property name="Group" value="Storage,Building,advBuilding,Blocks,Player"/>
-			<property name="DescriptionKey" value="jcphluxBlockAutoBaseBuilderDesc"/>
+			<property name="DescriptionKey" value="JCPhluxBlockABBDesc"/>
 			<property name="EconomicValue" value="350"/>
 			<property name="EconomicBundleSize" value="5"/>
 			<property name="Stacknumber" value="3"/>

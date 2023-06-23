@@ -455,7 +455,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 				if (lastMissingItem != null)
 				{
 					var player = GameManager.Instance?.World?.GetPrimaryPlayer();
-					string msg = Localization.Get("jcphluxBlockAutoBaseBuilderMissed");
+					string msg = Localization.Get("JCPhluxBlockABBMissed");
 					if (string.IsNullOrEmpty(msg)) msg = "Base Auto Builder could use {0}";
 					msg = string.Format(msg, ItemClass.GetItemClass(lastMissingItem).GetLocalizedItemName());
 					GameManager.Instance.ChatMessageServer(
