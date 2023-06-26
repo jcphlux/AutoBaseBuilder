@@ -65,8 +65,7 @@ public class XUiC_ABBPrefabList : XUiController
     {
         base.OnClose();
         this.blockInfo.Clear();
-        //this.activePrefab.CleanFromWorld(GameManager.Instance.World, true);
-        GameManager.Instance.GetDynamicPrefabDecorator().RemoveActivePrefab(GameManager.Instance.World);
+        ClearPrefab();
     }
 
     private void FileListOnPageNumberChanged(int _pageNumber) => this.fileList.SelectedEntryIndex = this.fileList.Page * this.fileList.PageLength;
@@ -119,43 +118,61 @@ public class XUiC_ABBPrefabList : XUiController
         Prefab selectedPrefab = new();
         selectedPrefab.Load(location);
 
-        int rotCount = 0;
+        int rotCount = 0; // selectedPrefab.rotationToFaceNorth;
         Vector3i prefabPos = this.blockInfo.blockPos;
         prefabPos.y += selectedPrefab.yOffset;
+
+        int v = selectedPrefab.rotationToFaceNorth % 2;
+        //int x = 
+        //int z = v ? selectedPrefab.size.z : selectedPrefab.size.x;
         switch (this.prefabFace)
         {
             case BlockFace.North:
                 prefabPos.z += 1;
-                prefabPos.x -= selectedPrefab.size.x / 2;
-                rotCount = 0;
+                prefabPos.x -= (v == 0 ? selectedPrefab.size.x : selectedPrefab.size.z) / 2;
                 break;
             case BlockFace.West:
-                prefabPos.z -= selectedPrefab.size.z / 2;
-                prefabPos.x -= selectedPrefab.size.x;
-                rotCount = 1;
+                prefabPos.z -= (v == 0 ? selectedPrefab.size.x : selectedPrefab.size.z) / 2;
+                prefabPos.x -= v != 0 ? selectedPrefab.size.x : selectedPrefab.size.z;
+                rotCount += 3;
                 break;
             case BlockFace.South:
-                prefabPos.z -= selectedPrefab.size.z;
-                prefabPos.x -= selectedPrefab.size.x / 2;
-                rotCount = 2;
+                prefabPos.z -= v != 0 ? selectedPrefab.size.x : selectedPrefab.size.z;
+                prefabPos.x -= (v == 0 ? selectedPrefab.size.x : selectedPrefab.size.z) / 2;
+                rotCount += 2;
                 break;
             case BlockFace.East:
-                prefabPos.z -= selectedPrefab.size.z / 2;
+                prefabPos.z -= (v == 0 ? selectedPrefab.size.x : selectedPrefab.size.z) / 2;
                 prefabPos.x += 1;
-                rotCount = 3;
+                rotCount += 1;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        rotCount %= 4;
+        Log.Out("Prefab Rotation to face north: " + selectedPrefab.rotationToFaceNorth.ToString());
+        Log.Out("PrefabFace=" + this.prefabFace.ToString());
+        Log.Out("BlockPos=" + this.blockInfo.blockPos.ToString());
+        Log.Out("PrefabPos=" + prefabPos.ToString());
+        Log.Out("PrefabSize=" + selectedPrefab.size.ToString());
+        Log.Out("PrefabOffset=" + selectedPrefab.yOffset.ToString());
+
+        ClearPrefab();
 
         this.activePrefab = CreateNewPrefabAndActivate(selectedPrefab.location, prefabPos, selectedPrefab);
         while (rotCount-- > 0)
             this.activePrefab.RotateAroundY();
-        //this.activePrefab.CopyIntoWorld(GameManager.Instance.World, false, false, FastTags.none);
         this.activePrefab.UpdateImposterView();
 
 
         //this.xui.playerUI.windowManager.Close(XUiC_InGameMenuWindow.ID);
+    }
+
+    private void ClearPrefab()
+    {
+        this.activePrefab?.CleanFromWorld(GameManager.Instance.World, true);
+        GameManager.Instance.GetDynamicPrefabDecorator().RemoveActivePrefab(GameManager.Instance.World);
+        this.activePrefab = null;
     }
 
     public ABBPrefabInstance CreateNewPrefabAndActivate(PathAbstractions.AbstractedLocation _location, Vector3i _position, Prefab _bad, bool _bSetActive = true)
