@@ -118,13 +118,11 @@ public class XUiC_ABBPrefabList : XUiController
         Prefab selectedPrefab = new();
         selectedPrefab.Load(location);
 
-        int rotCount = 0; // selectedPrefab.rotationToFaceNorth;
+        int rotCount = 0;
         Vector3i prefabPos = this.blockInfo.blockPos;
         prefabPos.y += selectedPrefab.yOffset;
 
         int v = selectedPrefab.rotationToFaceNorth % 2;
-        //int x = 
-        //int z = v ? selectedPrefab.size.z : selectedPrefab.size.x;
         switch (this.prefabFace)
         {
             case BlockFace.North:
@@ -150,13 +148,6 @@ public class XUiC_ABBPrefabList : XUiController
                 throw new ArgumentOutOfRangeException();
         }
         rotCount %= 4;
-        Log.Out("Prefab Rotation to face north: " + selectedPrefab.rotationToFaceNorth.ToString());
-        Log.Out("PrefabFace=" + this.prefabFace.ToString());
-        Log.Out("BlockPos=" + this.blockInfo.blockPos.ToString());
-        Log.Out("PrefabPos=" + prefabPos.ToString());
-        Log.Out("PrefabSize=" + selectedPrefab.size.ToString());
-        Log.Out("PrefabOffset=" + selectedPrefab.yOffset.ToString());
-
         ClearPrefab();
 
         this.activePrefab = CreateNewPrefabAndActivate(selectedPrefab.location, prefabPos, selectedPrefab);
