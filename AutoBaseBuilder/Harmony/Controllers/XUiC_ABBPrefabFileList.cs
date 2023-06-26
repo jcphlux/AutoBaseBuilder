@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-public class XUiC_UserDataPrefabFileList : XUiC_PrefabFileList
+public class XUiC_ABBPrefabFileList : XUiC_PrefabFileList
 {
     private readonly List<PathAbstractions.AbstractedLocation> prefabSearchList = new List<PathAbstractions.AbstractedLocation>();
 
@@ -12,7 +12,6 @@ public class XUiC_UserDataPrefabFileList : XUiC_PrefabFileList
 
     public override void RebuildList(bool _resetFilter = false)
     {
-        Log.Out("Phlux Rebuild List");
         this.allEntries.Clear();
         this.prefabSearchList.Clear();
         foreach (PathAbstractions.AbstractedLocation availablePaths in PathAbstractions.PrefabsSearchPaths.GetAvailablePathsList())
@@ -22,7 +21,7 @@ public class XUiC_UserDataPrefabFileList : XUiC_PrefabFileList
         this.allEntries.Sort();
         SelectedEntry = null;
         RefreshView(_resetFilter);
-        
+
     }
 }
 

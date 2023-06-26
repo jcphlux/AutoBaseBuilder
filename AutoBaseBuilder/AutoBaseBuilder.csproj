@@ -96,13 +96,19 @@
       <HintPath>$(PATH_7D2D_MANAGED)\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\7D2D\Custom\MyMods\7DaysToDie_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony\ABBPrefabInstance.cs" />
     <Compile Include="Harmony\BlockAutoBaseBuilder.cs" />
-    <Compile Include="Harmony\Controllers\XUiC_UserDataPrefabList.cs" />
+    <Compile Include="Harmony\Controllers\XUiC_ABBPrefabList.cs" />
     <Compile Include="Harmony\JCPhluxAutoBaseBuilder.cs" />
     <Compile Include="Harmony\TileEntityAutoBaseBuilder.cs" />
-    <Compile Include="Harmony\Controllers\XUiC_UserDataPrefabFileList.cs" />
+    <Compile Include="Harmony\Controllers\XUiC_ABBPrefabFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Library\ModXmlPatcher.cs" />
   </ItemGroup>

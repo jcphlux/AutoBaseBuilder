@@ -4,13 +4,13 @@
 
 		<append xpath="/items">
 
-			<item name="JCPhluxBlockABBBlueprint">
+			<item name="blockABBBlueprint">
 				<property name="Extends" value="schematicNoQualityMaster"/>
 				<property name="CustomIcon" value="AutoBaseBuilder"/>
 				<property name="Group" value="Schematics,BPScience,Books,Items"/>
-				<property name="Unlocks" value="JCPhluxBlockABB"/>
+				<property name="Unlocks" value="blockABB"/>
 				<effect_group tiered="false">
-					<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="JCPhluxBlockABB" operation="set" value="1"/>
+					<triggered_effect trigger="onSelfPrimaryActionEnd" action="ModifyCVar" cvar="blockABB" operation="set" value="1"/>
 					<triggered_effect trigger="onSelfPrimaryActionEnd" action="GiveExp" exp="50"/>
 				</effect_group>
 			</item>

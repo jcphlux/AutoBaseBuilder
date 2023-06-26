@@ -1,8 +1,8 @@
 <configs>
 
-	<append xpath="/blocks/block[@name='JCPhluxBlockABB']">
+	<append xpath="/blocks/block[@name='blockABB']">
 
-		<property name="UnlockedBy" value="JCPhluxBlockABBBlueprint"/>
+		<property name="UnlockedBy" value="blockABBBlueprint"/>
 
 		<property name="CarryWeight" value="2"/>
 		<property name="Stacknumber" value="5"/>

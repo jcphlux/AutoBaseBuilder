@@ -1,7 +1,7 @@
 <configs>
 	<append xpath="/recipes">
 
-		<recipe name="JCPhluxBlockABB" count="1"
+		<recipe name="blockABB" count="1"
 				tags="perkAdvancedEngineering,learnable"
 				craft_area="workbench" material_based="false"
 				craft_time="300">

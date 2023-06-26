@@ -6,4 +6,13 @@
   <PropertyGroup>
     <ReferencePath>C:\7D2D\Custom\MyMods\7DaysToDie_Data\Managed\</ReferencePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Project</StartAction>
+    <StartProgram>
+    </StartProgram>
+    <StartArguments>
+    </StartArguments>
+    <StartWorkingDirectory>
+    </StartWorkingDirectory>
+  </PropertyGroup>
 </Project>

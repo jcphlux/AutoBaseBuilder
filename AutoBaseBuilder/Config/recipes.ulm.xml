@@ -1,7 +1,7 @@
 <configs>
 	<append xpath="/recipes">
 
-		<recipe name="JCPhluxBlockABBBlueprint" time="90"
+		<recipe name="blockABBBlueprint" time="90"
 				area="ulmStationResearch_2">
 			<ingredient name="resourceForgedSteel" count="40"/>
 			<ingredient name="resourceMechanicalParts" count="40"/>
@@ -15,7 +15,7 @@
 			<ingredient name="resourcePaper" count="10"/>
 		</recipe>
 
-		<recipe name="JCPhluxBlockABB" time="600"
+		<recipe name="blockABB" time="600"
 				tags="learnable" area="ulmStationWorkbench_3">
 			<ingredient name="resourceForgedSteel" count="40"/>
 			<ingredient name="resourceMechanicalParts" count="40"/>
