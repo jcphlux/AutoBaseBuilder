@@ -1,5 +1,4 @@
-﻿using Platform;
-using System;
+﻿using System;
 using UnityEngine;
 
 
@@ -16,7 +15,6 @@ public class XUiC_ABBPrefabList : XUiController
     private byte prefabRotation = 0;
     private ABBPrefabInstance prefabInstance;
     private TileEntityAutoBaseBuilder tileEntity;
-    public PlayerActionsLocal playerInput => PlatformManager.NativePlatform.Input.PrimaryPlayer;
     private byte Rotation => tileEntity?.blockValue.rotation switch
     {
         0 or 27 => 0,
@@ -61,19 +59,6 @@ public class XUiC_ABBPrefabList : XUiController
         base.OnClose();
         ClearPrefab();
         btnPreview.Enabled = fileList.SelectedEntry != null;
-    }
-
-    //public override 
-
-    public override bool GetBindingValue(ref string _value, string _bindingName)
-    {
-        Log.Out($"XUiC_ABBPrefabList.GetBindingValue: {_bindingName}");
-        Log.Out($"XUiC_ABBPrefabList has_prefab: {prefabInstance != null}");
-        return _bindingName switch
-        {
-            "has_prefab" => prefabInstance != null,
-            _ => base.GetBindingValue(ref _value, _bindingName),
-        };
     }
 
     private void OnEntrySelectionChanged(
@@ -225,46 +210,6 @@ public class XUiC_ABBPrefabList : XUiController
         }
     }
 
-
-    //public override void Update(float _dt)
-    //{
-    //    base.Update(_dt);
-
-    //    if (prefabInstance == null)
-    //    {
-    //        //Log.Out("prefabInstance is null");
-    //        return;
-    //    }
-    //    Vector3i move = Vector3i.zero;
-
-    //    if (this.playerInput.GUIActions.DPad_Down.WasPressed)
-    //        move += Vector3i.back;
-    //    if (this.playerInput.GUIActions.DPad_Up.WasPressed)
-    //        move += Vector3i.forward;
-    //    if (this.playerInput.GUIActions.DPad_Left.WasPressed)
-    //        move += Vector3i.left;
-    //    if (this.playerInput.GUIActions.DPad_Right.WasPressed)
-    //        move += Vector3i.right;
-
-    //    foreach (PlayerAction action in playerInput.GUIActions.Actions)
-    //    {
-    //        if (action.WasPressed)
-    //            Log.Out("Player Input GUIActions: " + action.Name);
-    //    }
-    //    foreach (PlayerAction action in playerInput.Actions)
-    //    {
-    //        if (action.WasPressed)
-    //            Log.Out("Player Input: " + action.Name);
-    //    }
-
-    //    if (move == Vector3i.zero)
-    //        return;
-
-    //    prefabInstance.MoveBoundingBox(move);
-    //    Log.Out("Move: " + move.ToString() + " Offset: " + prefabOffset.ToString() + " Pos: " + prefabInstance.boundingBoxPosition.ToString());
-    //    prefabOffset += move;
-    //}
-
     private void LoadPrefab(PathAbstractions.AbstractedLocation location)
     {
         Prefab selectedPrefab = new();
@@ -285,7 +230,6 @@ public class XUiC_ABBPrefabList : XUiController
         btnPreview.Enabled = false;
         SliderHorizontalOffset_Reset();
         SliderVerticalOffset_Reset();
-        //for (PlayerAction action in this.playerInput.PermanentActions)
     }
 
     private void ClearPrefab()
