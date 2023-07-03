@@ -139,7 +139,7 @@
     <Content Include="UIAtlases\ItemIconAtlas\AutoBaseBuilder.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AutoBaseBuilder.unity3d" />
+    <Content Include="Resources\AutoBaseBuilder.unity3d" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

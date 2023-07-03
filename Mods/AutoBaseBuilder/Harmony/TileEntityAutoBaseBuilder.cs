@@ -15,10 +15,10 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
     public bool isAccessed;
 
     // Copied from LandClaim code
-    public Transform BoundsHelper;
+    //public Transform BoundsHelper;
 
     // The selected prefab to be built
-    public PathAbstractions.AbstractedLocation prefabLocation;
+    public PathAbstractions.AbstractedLocation prefabLocation = PathAbstractions.AbstractedLocation.None;
 
     // The offset of the prefab to be built
     public Vector3i prefabOffset = Vector3i.zero;
@@ -47,7 +47,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
                 this.isOn = value;
                 buildBlock = BlockValue.Air;
                 buildPosition = ToWorldPos();
-                ResetBoundHelper(Color.gray);
+                //ResetBoundHelper(Color.gray);
                 SetModified();
             }
         }
@@ -161,7 +161,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 
     //}
 
-    static Color orange = new Color(1f, 0.6f, 0f);
+    //static Color orange = new Color(1f, 0.6f, 0f);
 
     public void TickBuild(World world)
     {
@@ -394,8 +394,8 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
                 _bw.Write(IsUserAccessing());
                 break;
             case TileEntity.StreamModeWrite.ToClient:
-                _bw.Write(this.prefabLocation != null);
-                if (this.prefabLocation == null)
+                _bw.Write(!this.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None));
+                if (this.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None))
                     break;
 
                 _bw.Write(this.prefabLocation.Name);
@@ -437,7 +437,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
             buildBlock = BlockValue.Air;
             buildPosition = ToWorldPos();
             buildTicks = buildSpeed;
-            ResetBoundHelper(Color.gray);
+            //ResetBoundHelper(Color.gray);
             if (broadcast)
             {
                 SetModified();
@@ -494,85 +494,85 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         }
     }
 
-    public void EnableBoundHelper(float progress = 0)
-    {
-        if (BoundsHelper == null) return;
-        BoundsHelper.localPosition = buildPosition.ToVector3() -
-            Origin.position + new Vector3(0.5f, 0.5f, 0.5f);
-        BoundsHelper.gameObject.SetActive(this.isOn);
-        Color color = Color.yellow * (1f - progress) + Color.green * progress;
-        if (lastColor == color) return;
-        foreach (Renderer componentsInChild in BoundsHelper.GetComponentsInChildren<Renderer>())
-            componentsInChild.material.SetColor("_Color", color * 0.5f);
-        lastColor = color;
-    }
+    //public void EnableBoundHelper(float progress = 0)
+    //{
+    //    if (BoundsHelper == null) return;
+    //    BoundsHelper.localPosition = buildPosition.ToVector3() -
+    //        Origin.position + new Vector3(0.5f, 0.5f, 0.5f);
+    //    BoundsHelper.gameObject.SetActive(this.isOn);
+    //    Color color = Color.yellow * (1f - progress) + Color.green * progress;
+    //    if (lastColor == color) return;
+    //    foreach (Renderer componentsInChild in BoundsHelper.GetComponentsInChildren<Renderer>())
+    //        componentsInChild.material.SetColor("_Color", color * 0.5f);
+    //    lastColor = color;
+    //}
 
-    private Color lastColor = Color.clear;
+    //private Color lastColor = Color.clear;
 
-    public void ResetBoundHelper(Color color)
-    {
-        if (BoundsHelper == null) return;
-        BoundsHelper.localPosition = ToWorldPos().ToVector3() -
-            Origin.position + new Vector3(0.5f, 0.5f, 0.5f);
-        BoundsHelper.gameObject.SetActive(this.isOn);
-        // Only update if necessary
-        if (lastColor == color) return;
-        foreach (Renderer componentsInChild in BoundsHelper.GetComponentsInChildren<Renderer>())
-            componentsInChild.material.SetColor("_Color", color * 0.5f);
-        lastColor = color;
-    }
+    //public void ResetBoundHelper(Color color)
+    //{
+    //    if (BoundsHelper == null) return;
+    //    BoundsHelper.localPosition = ToWorldPos().ToVector3() -
+    //        Origin.position + new Vector3(0.5f, 0.5f, 0.5f);
+    //    BoundsHelper.gameObject.SetActive(this.isOn);
+    //    // Only update if necessary
+    //    if (lastColor == color) return;
+    //    foreach (Renderer componentsInChild in BoundsHelper.GetComponentsInChildren<Renderer>())
+    //        componentsInChild.material.SetColor("_Color", color * 0.5f);
+    //    lastColor = color;
+    //}
 
-    private bool IsBlockInsideClaim(
-        World world,
-        Chunk chunk,
-        Vector3i blockPos,
-        PersistentPlayerData lpRelative,
-        int claimSize,
-        bool includeAllies)
-    {
+    //private bool IsBlockInsideClaim(
+    //    World world,
+    //    Chunk chunk,
+    //    Vector3i blockPos,
+    //    PersistentPlayerData lpRelative,
+    //    int claimSize,
+    //    bool includeAllies)
+    //{
 
-        // Vector3i worldPos = chunk.GetWorldPos();
-        // Check if block to be repaired is within a trader area?
-        // if (world.IsWithinTraderArea(worldPos + blockPos)) return false;
+    //    // Vector3i worldPos = chunk.GetWorldPos();
+    //    // Check if block to be repaired is within a trader area?
+    //    // if (world.IsWithinTraderArea(worldPos + blockPos)) return false;
 
-        foreach (var player in world.gameManager.GetPersistentPlayerList().Players)
-        {
+    //    foreach (var player in world.gameManager.GetPersistentPlayerList().Players)
+    //    {
 
-            PersistentPlayerData playerData = player.Value;
-            // PlatformUserIdentifierAbs playerId = player.Key;
+    //        PersistentPlayerData playerData = player.Value;
+    //        // PlatformUserIdentifierAbs playerId = player.Key;
 
-            // First check if user is not myself
-            if (lpRelative != playerData)
-            {
-                // Check if allies should be considered and if ACL is there
-                if (includeAllies == false || playerData.ACL == null) continue;
-                // Now check the actual ACL if player is allied with ourself
-                if (!playerData.ACL.Contains(lpRelative.UserIdentifier)) continue;
-            }
+    //        // First check if user is not myself
+    //        if (lpRelative != playerData)
+    //        {
+    //            // Check if allies should be considered and if ACL is there
+    //            if (includeAllies == false || playerData.ACL == null) continue;
+    //            // Now check the actual ACL if player is allied with ourself
+    //            if (!playerData.ACL.Contains(lpRelative.UserIdentifier)) continue;
+    //        }
 
-            // Get all land-claim blocks of the allied user (or our-self)
-            if (player.Value.GetLandProtectionBlocks() is List<Vector3i> claimPositions)
-            {
-                for (int i = 0; i < claimPositions.Count; ++i)
-                {
-                    // Fetch block value at position where claim block should be
-                    BlockValue blockValue = world.GetBlock(claimPositions[i]);
-                    // The "primary" flag is encoded in `blockValue.meta`
-                    if (BlockLandClaim.IsPrimary(blockValue))
-                    {
-                        // Now check if the block is inside the range
-                        if (Mathf.Abs(claimPositions[i].x - blockPos.x) > claimSize) continue;
-                        if (Mathf.Abs(claimPositions[i].z - blockPos.z) > claimSize) continue;
-                        // Block within my claim
-                        return true;
-                    }
-                }
-            }
+    //        // Get all land-claim blocks of the allied user (or our-self)
+    //        if (player.Value.GetLandProtectionBlocks() is List<Vector3i> claimPositions)
+    //        {
+    //            for (int i = 0; i < claimPositions.Count; ++i)
+    //            {
+    //                // Fetch block value at position where claim block should be
+    //                BlockValue blockValue = world.GetBlock(claimPositions[i]);
+    //                // The "primary" flag is encoded in `blockValue.meta`
+    //                if (BlockLandClaim.IsPrimary(blockValue))
+    //                {
+    //                    // Now check if the block is inside the range
+    //                    if (Mathf.Abs(claimPositions[i].x - blockPos.x) > claimSize) continue;
+    //                    if (Mathf.Abs(claimPositions[i].z - blockPos.z) > claimSize) continue;
+    //                    // Block within my claim
+    //                    return true;
+    //                }
+    //            }
+    //        }
 
-        }
+    //    }
 
-        // Not inside my claim
-        return false;
-    }
+    //    // Not inside my claim
+    //    return false;
+    //}
 
 }

@@ -7,8 +7,6 @@
 			<property name="Tags" value="safes,hardenedSafe"/>
 			<property name="Class" value="AutoBaseBuilder, JCPhluxAutoBaseBuilder"/>
 			<property name="CustomIcon" value="AutoBaseBuilder"/>
-			<property name="OnlySimpleRotations" value="true"/>
-			<property name="AllowedRotations" value="Basic90" />
 			<property name="Material" value="Mmetal"/>
 			<property name="StabilitySupport" value="true"/>
 			<property name="Shape" value="ModelEntity"/>
@@ -27,8 +25,7 @@
 
 			<property name="CanPickup" value="true"/>
 			<property name="TakeDelay" value="20"/>
-
-			<property name="AutoBaseBuilderSpeedFactor" value="200"/>
+			<property name="BuildSpeed" value="200"/>
 		</block>
 	</append>
 

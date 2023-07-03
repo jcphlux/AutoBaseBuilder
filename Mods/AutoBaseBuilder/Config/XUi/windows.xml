@@ -32,7 +32,10 @@
 					<simplebutton name="btnPreview" pos="5, -456" depth="3" caption_key="xuiPrefabPreview" tooltip_key="ttPrefabPreview" width="290" height="30" font_size="30" />
 				</rect>
 				<!--ui_game_symbol_rotate_simple-->
-
+				<rect pos="5, -489" >
+					<debugslider name="sliderHorizontalOffset" depth="3" pos="0, -10" width="290" />
+					<debugslider name="sliderVerticalOffset" depth="3" pos="0, -74" width="290" />
+				</rect>
 			</panel>
 		</window>
 	</append>

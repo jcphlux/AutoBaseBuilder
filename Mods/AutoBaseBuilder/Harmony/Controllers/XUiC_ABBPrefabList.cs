@@ -10,6 +10,8 @@ public class XUiC_ABBPrefabList : XUiController
     private XUiV_Texture prefabPreview;
     private XUiV_Label noPreviewLabel;
     private XUiC_SimpleButton btnPreview;
+    private XUiC_Slider sliderHorizontalOffset;
+    private XUiC_Slider sliderVerticalOffset;
     private Vector3i prefabOffset = Vector3i.zero;
     private byte prefabRotation = 0;
     private ABBPrefabInstance prefabInstance;
@@ -31,26 +33,27 @@ public class XUiC_ABBPrefabList : XUiController
         prefabPreview = (XUiV_Texture)GetChildById("prefabPreview").ViewComponent;
         noPreviewLabel = (XUiV_Label)GetChildById("noPreview").ViewComponent;
         noPreviewLabel.IsVisible = false;
+
         fileList = GetChildById("files") as XUiC_ABBPrefabFileList;
-        btnPreview = GetChildById("btnPreview") as XUiC_SimpleButton;
         fileList.SelectionChanged += new XUiEvent_ListSelectionChangedEventHandler<XUiC_ABBPrefabFileList.PrefabFileEntry>(OnEntrySelectionChanged);
         fileList.OnEntryDoubleClicked += new XUiC_ABBPrefabFileList.EntryDoubleClickedDelegate(OnEntryDoubleClicked);
         fileList.PageNumberChanged += new XUiEvent_ListPageNumberChangedEventHandler(OnPageNumberChanged);
-        btnPreview.OnPressed += new XUiEvent_OnPressEventHandler(OnPreviewPressed);
+
+        btnPreview = GetChildById("btnPreview") as XUiC_SimpleButton;
         btnPreview.Enabled = false;
-    }
+        btnPreview.OnPressed += new XUiEvent_OnPressEventHandler(OnPreviewPressed);
 
-    public void SetTileEntity(TileEntityAutoBaseBuilder _tileEntity)
-    {
-        tileEntity = _tileEntity;
+        sliderHorizontalOffset = GetChildById("sliderHorizontalOffset") as XUiC_Slider;
+        sliderHorizontalOffset.Label = "Horizontal Offset"; // Localization.Get("xuiSliderOffset");
+        sliderHorizontalOffset.Value = 0.5f;
+        sliderHorizontalOffset.ValueFormatter = new Func<float, string>(SliderHorizontalOffset_ValueFormatter);
+        sliderHorizontalOffset.OnValueChanged += new XUiEvent_SliderValueChanged(OnSliderHorizontalOffsetChanged);
 
-        if (tileEntity.prefabLocation != null & fileList.SelectByLocation(tileEntity.prefabLocation))
-        {
-            prefabOffset = _tileEntity.prefabOffset;
-            prefabRotation = _tileEntity.prefabRotation;
-            OnEntrySelectionChanged(null, fileList.SelectedEntry);
-            OnPreviewPressed(this, -1);
-        }
+        sliderVerticalOffset = GetChildById("sliderVerticalOffset") as XUiC_Slider;
+        sliderVerticalOffset.Label = "Vertical Offset"; // Localization.Get("xuiSliderOffset");
+        sliderVerticalOffset.Value = 0.5f;
+        sliderVerticalOffset.ValueFormatter = new Func<float, string>(SliderVerticalOffset_ValueFormatter);
+        sliderVerticalOffset.OnValueChanged += new XUiEvent_SliderValueChanged(OnSliderVerticalOffsetChanged);
     }
 
     public override void OnClose()
@@ -60,7 +63,18 @@ public class XUiC_ABBPrefabList : XUiController
         btnPreview.Enabled = fileList.SelectedEntry != null;
     }
 
-    private void OnPageNumberChanged(int _pageNumber) => fileList.SelectedEntryIndex = fileList.Page * fileList.PageLength;
+    //public override 
+
+    public override bool GetBindingValue(ref string _value, string _bindingName)
+    {
+        Log.Out($"XUiC_ABBPrefabList.GetBindingValue: {_bindingName}");
+        Log.Out($"XUiC_ABBPrefabList has_prefab: {prefabInstance != null}");
+        return _bindingName switch
+        {
+            "has_prefab" => prefabInstance != null,
+            _ => base.GetBindingValue(ref _value, _bindingName),
+        };
+    }
 
     private void OnEntrySelectionChanged(
       XUiC_ListEntry<XUiC_ABBPrefabFileList.PrefabFileEntry> _previousEntry,
@@ -99,6 +113,8 @@ public class XUiC_ABBPrefabList : XUiController
         OnPreviewPressed(this, -1);
     }
 
+    private void OnPageNumberChanged(int _pageNumber) => fileList.SelectedEntryIndex = fileList.Page * fileList.PageLength;
+
     private void OnPreviewPressed(XUiController _sender, int _mouseButton)
     {
         PathAbstractions.AbstractedLocation location = fileList.SelectedEntry.GetEntry().location;
@@ -106,36 +122,148 @@ public class XUiC_ABBPrefabList : XUiController
         //prefabInstance.SetBoundingBoxPosition(prefabPos + Vector3i.right);
     }
 
-    protected void Update()
+    private int SliderHorizontalOffset_Value()
     {
         if (prefabInstance == null)
         {
-            Log.Out("prefabInstance is null");
+            return 0;
+        }
+
+        float clampedValue = Mathf.Clamp(sliderHorizontalOffset.Value, 0.0f, 1.0f);
+        int halfSize = Mathf.FloorToInt(prefabInstance.boundingBoxSize.x / 2.0f);
+        int offset = Mathf.RoundToInt((clampedValue - 0.5f) * (2 * halfSize));
+
+        return Mathf.Clamp(offset, -halfSize, halfSize);
+    }
+
+    private void SliderHorizontalOffset_Reset()
+    {
+        if (prefabInstance == null)
+        {
             return;
         }
-        Vector3i move = Vector3i.zero;
 
-
-        if (this.playerInput.MoveBack.WasPressed)
-            move += -1 * Vector3i.forward;
-        if (this.playerInput.MoveForward.WasPressed)
-            move += Vector3i.forward;
-        if (this.playerInput.MoveLeft.WasPressed)
-            move += -1 * Vector3i.right;
-        if (this.playerInput.MoveRight.WasPressed)
-            move += Vector3i.right;
-
-        prefabInstance.MoveBoundingBox(move);
-        prefabOffset += move;
-        //if (Input.GetKeyDown(KeyCode.LeftArrow))
-
-        //foreach (PlayerAction action in playerInput.GUIActions.Actions)
-        //{
-        //    if (action.WasPressed)
-        //        Log.Out("Player Input :" + action.Name);
-        //}
-
+        prefabOffset.x = 0;
+        sliderHorizontalOffset.Value = 0.5f;
     }
+
+    private string SliderHorizontalOffset_ValueFormatter(float _value) => SliderHorizontalOffset_Value().ToString();
+
+    private void OnSliderHorizontalOffsetChanged(XUiC_Slider _sender)
+    {
+        if (prefabInstance == null)
+        {
+            sliderHorizontalOffset.Value = 0.5f;
+            return;
+        }
+
+        int xDiff = prefabOffset.x - SliderHorizontalOffset_Value();
+        Vector3i move = Vector3i.zero;
+        if (xDiff != 0)
+        {
+            move.x = xDiff;
+            prefabOffset.x = SliderHorizontalOffset_Value();
+            prefabInstance.MoveBoundingBox(move);
+        }
+    }
+    private int SliderVerticalOffset_Value()
+    {
+        if (prefabInstance == null)
+        {
+            return 0;
+        }
+
+        float clampedValue = Mathf.Clamp(sliderVerticalOffset.Value, 0.0f, 1.0f);
+        float yOffset = prefabInstance.prefab.yOffset;
+        float offset = yOffset + (clampedValue * (prefabInstance.boundingBoxSize.y - 1));
+
+        return Mathf.RoundToInt(offset);
+    }
+
+    private void SliderVerticalOffset_Reset()
+    {
+        if (prefabInstance == null)
+        {
+            return;
+        }
+
+        float yOffset = prefabInstance.prefab.yOffset;
+        float offset = -yOffset;
+        float clampedValue = Mathf.InverseLerp(0, prefabInstance.boundingBoxSize.y - 1, offset);
+        sliderVerticalOffset.Value = Mathf.Clamp01(clampedValue);
+    }
+
+    private string SliderVerticalOffset_ValueFormatter(float _value) => SliderVerticalOffset_Value().ToString();
+
+    private void OnSliderVerticalOffsetChanged(XUiC_Slider _sender)
+    {
+        if (prefabInstance == null)
+        {
+            sliderVerticalOffset.Value = 0.5f;
+            return;
+        }
+        int yDiff = prefabOffset.y - SliderVerticalOffset_Value();
+        Vector3i move = Vector3i.zero;
+        if (yDiff != 0)
+        {
+            move.y = yDiff;
+            prefabOffset.y = SliderVerticalOffset_Value();
+            prefabInstance.MoveBoundingBox(move);
+        }
+    }
+
+    public void SetTileEntity(TileEntityAutoBaseBuilder _tileEntity)
+    {
+        tileEntity = _tileEntity;
+
+        if (!tileEntity.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None) & fileList.SelectByLocation(tileEntity.prefabLocation))
+        {
+            prefabOffset = _tileEntity.prefabOffset;
+            prefabRotation = _tileEntity.prefabRotation;
+            OnEntrySelectionChanged(null, fileList.SelectedEntry);
+            OnPreviewPressed(this, -1);
+        }
+    }
+
+
+    //public override void Update(float _dt)
+    //{
+    //    base.Update(_dt);
+
+    //    if (prefabInstance == null)
+    //    {
+    //        //Log.Out("prefabInstance is null");
+    //        return;
+    //    }
+    //    Vector3i move = Vector3i.zero;
+
+    //    if (this.playerInput.GUIActions.DPad_Down.WasPressed)
+    //        move += Vector3i.back;
+    //    if (this.playerInput.GUIActions.DPad_Up.WasPressed)
+    //        move += Vector3i.forward;
+    //    if (this.playerInput.GUIActions.DPad_Left.WasPressed)
+    //        move += Vector3i.left;
+    //    if (this.playerInput.GUIActions.DPad_Right.WasPressed)
+    //        move += Vector3i.right;
+
+    //    foreach (PlayerAction action in playerInput.GUIActions.Actions)
+    //    {
+    //        if (action.WasPressed)
+    //            Log.Out("Player Input GUIActions: " + action.Name);
+    //    }
+    //    foreach (PlayerAction action in playerInput.Actions)
+    //    {
+    //        if (action.WasPressed)
+    //            Log.Out("Player Input: " + action.Name);
+    //    }
+
+    //    if (move == Vector3i.zero)
+    //        return;
+
+    //    prefabInstance.MoveBoundingBox(move);
+    //    Log.Out("Move: " + move.ToString() + " Offset: " + prefabOffset.ToString() + " Pos: " + prefabInstance.boundingBoxPosition.ToString());
+    //    prefabOffset += move;
+    //}
 
     private void LoadPrefab(PathAbstractions.AbstractedLocation location)
     {
@@ -155,6 +283,9 @@ public class XUiC_ABBPrefabList : XUiController
             prefabInstance.RotateAroundY();
         prefabInstance.UpdateImposterView();
         btnPreview.Enabled = false;
+        SliderHorizontalOffset_Reset();
+        SliderVerticalOffset_Reset();
+        //for (PlayerAction action in this.playerInput.PermanentActions)
     }
 
     private void ClearPrefab()

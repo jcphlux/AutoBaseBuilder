@@ -1,12 +1,11 @@
 using System;
-using UnityEngine;
 
 public class BlockAutoBaseBuilder : BlockSecureLoot
 {
 
-    private Vector2i LootSize = new Vector2i(8, 8);
+    private Vector2i LootSize = new Vector2i(8, 4);
 
-    private float BoundHelperSize = 2.59f;
+    //private float BoundHelperSize = 2.59f;
 
     private float BuildSpeed = 200f;
 
@@ -14,34 +13,33 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
 
     public override void Init()
     {
-        this.AllowedRotations = EBlockRotationClasses.Basic90;
         base.Init();
         TakeDelay = !Properties.Values.ContainsKey("TakeDelay") ? TakeDelay
             : StringParsers.ParseFloat(Properties.Values["TakeDelay"]);
-        BuildSpeed = !Properties.Values.ContainsKey("AutoBaseBuilderSpeedFactor") ? BuildSpeed
-            : StringParsers.ParseFloat(Properties.Values["AutoBaseBuilderSpeedFactor"]);
+        BuildSpeed = !Properties.Values.ContainsKey("BuildSpeed") ? BuildSpeed
+            : StringParsers.ParseFloat(Properties.Values["BuildSpeed"]);
     }
 
-    public override void OnBlockLoaded(
-        WorldBase _world,
-        int _clrIdx,
-        Vector3i _blockPos,
-        BlockValue _blockValue)
-    {
-        base.OnBlockLoaded(_world, _clrIdx, _blockPos, _blockValue);
-        if (GameManager.IsDedicatedServer) return;
-        if (_world.GetTileEntity(_clrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
-        {
-            Transform boundsHelper = LandClaimBoundsHelper.GetBoundsHelper(_blockPos.ToVector3());
-            if (boundsHelper != null)
-            {
-                boundsHelper.localScale = new Vector3(BoundHelperSize, BoundHelperSize, BoundHelperSize);
-                boundsHelper.localPosition = new Vector3(_blockPos.x + 0.5f, _blockPos.y + 0.5f, _blockPos.z + 0.5f);
-                tileEntityLandAutoRepair.BoundsHelper = boundsHelper;
-                tileEntityLandAutoRepair.ResetBoundHelper(Color.gray);
-            }
-        }
-    }
+    //public override void OnBlockLoaded(
+    //    WorldBase _world,
+    //    int _clrIdx,
+    //    Vector3i _blockPos,
+    //    BlockValue _blockValue)
+    //{
+    //    base.OnBlockLoaded(_world, _clrIdx, _blockPos, _blockValue);
+    //    if (GameManager.IsDedicatedServer) return;
+    //    if (_world.GetTileEntity(_clrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
+    //    {
+    //        Transform boundsHelper = LandClaimBoundsHelper.GetBoundsHelper(_blockPos.ToVector3());
+    //        if (boundsHelper != null)
+    //        {
+    //            boundsHelper.localScale = new Vector3(BoundHelperSize, BoundHelperSize, BoundHelperSize);
+    //            boundsHelper.localPosition = new Vector3(_blockPos.x + 0.5f, _blockPos.y + 0.5f, _blockPos.z + 0.5f);
+    //            //tileEntityLandAutoRepair.BoundsHelper = boundsHelper;
+    //            //tileEntityLandAutoRepair.ResetBoundHelper(Color.gray);
+    //        }
+    //    }
+    //}
 
     public override void OnBlockEntityTransformAfterActivated(
         WorldBase _world,
@@ -91,44 +89,44 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
 
         base.OnBlockAdded(_world, _chunk, _blockPos, _blockValue);
         if (GameManager.IsDedicatedServer) return;
-        if (_world.GetTileEntity(_chunk.ClrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
-        {
-            Transform boundsHelper = LandClaimBoundsHelper.GetBoundsHelper(_blockPos.ToVector3());
-            if (boundsHelper != null)
-            {
-                boundsHelper.localScale = new Vector3(BoundHelperSize, BoundHelperSize, BoundHelperSize);
-                boundsHelper.localPosition = new Vector3(_blockPos.x + 0.5f, _blockPos.y + 0.5f, _blockPos.z + 0.5f);
-                tileEntityLandAutoRepair.BoundsHelper = boundsHelper;
-                tileEntityLandAutoRepair.ResetBoundHelper(Color.gray);
-            }
-        }
+        //if (_world.GetTileEntity(_chunk.ClrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
+        //{
+        //    Transform boundsHelper = LandClaimBoundsHelper.GetBoundsHelper(_blockPos.ToVector3());
+        //    if (boundsHelper != null)
+        //    {
+        //        boundsHelper.localScale = new Vector3(BoundHelperSize, BoundHelperSize, BoundHelperSize);
+        //        boundsHelper.localPosition = new Vector3(_blockPos.x + 0.5f, _blockPos.y + 0.5f, _blockPos.z + 0.5f);
+        //        //tileEntityLandAutoRepair.BoundsHelper = boundsHelper;
+        //        //tileEntityLandAutoRepair.ResetBoundHelper(Color.gray);
+        //    }
+        //}
     }
 
-    public override void OnBlockRemoved(
-        WorldBase _world,
-        Chunk _chunk,
-        Vector3i _blockPos,
-        BlockValue _blockValue)
-    {
-        base.OnBlockRemoved(_world, _chunk, _blockPos, _blockValue);
-        if (_world.GetTileEntity(_chunk.ClrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
-        {
-            LandClaimBoundsHelper.RemoveBoundsHelper(_blockPos.ToVector3());
-        }
-    }
+    //public override void OnBlockRemoved(
+    //    WorldBase _world,
+    //    Chunk _chunk,
+    //    Vector3i _blockPos,
+    //    BlockValue _blockValue)
+    //{
+    //    base.OnBlockRemoved(_world, _chunk, _blockPos, _blockValue);
+    //    //if (_world.GetTileEntity(_chunk.ClrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
+    //    //{
+    //    //    LandClaimBoundsHelper.RemoveBoundsHelper(_blockPos.ToVector3());
+    //    //}
+    //}
 
-    public override void OnBlockUnloaded(
-        WorldBase _world,
-        int _clrIdx,
-        Vector3i _blockPos,
-        BlockValue _blockValue)
-    {
-        base.OnBlockUnloaded(_world, _clrIdx, _blockPos, _blockValue);
-        if (_world.GetTileEntity(_clrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
-        {
-            LandClaimBoundsHelper.RemoveBoundsHelper(_blockPos.ToVector3());
-        }
-    }
+    //public override void OnBlockUnloaded(
+    //    WorldBase _world,
+    //    int _clrIdx,
+    //    Vector3i _blockPos,
+    //    BlockValue _blockValue)
+    //{
+    //    base.OnBlockUnloaded(_world, _clrIdx, _blockPos, _blockValue);
+    //    if (_world.GetTileEntity(_clrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
+    //    {
+    //        LandClaimBoundsHelper.RemoveBoundsHelper(_blockPos.ToVector3());
+    //    }
+    //}
 
     public override BlockActivationCommand[] GetBlockActivationCommands(
         WorldBase _world,
@@ -152,7 +150,7 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
             cmds[cmds.Length - 2].enabled = false;
 
         string prefablist_cmd = "select_abb_prefab";
-        if (tileEntity.prefabLocation == null)
+        if (!tileEntity.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None))
         {
             prefablist_cmd = Localization.Get("blockcommand_selected_abb_prefab");
             if (string.IsNullOrEmpty(prefablist_cmd)) prefablist_cmd = "Selected Prefab {0}";
@@ -174,10 +172,11 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
     {
         if (_world.GetTileEntity(_cIdx, _blockPos) is not TileEntityAutoBaseBuilder tileEntity) return false;
 
-        bool hasPrefab = tileEntity.prefabLocation != null;
+        bool hasPrefab = !tileEntity.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None);
 
         if (_commandName == "take")
         {
+
             bool flag = this.CanPickup;
             if ((double)EffectManager.GetValue(PassiveEffects.BlockPickup, _entity: _player, tags: _blockValue.Block.Tags) > 0.0)
                 flag = true;
