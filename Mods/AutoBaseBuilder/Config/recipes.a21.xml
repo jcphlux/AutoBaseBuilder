@@ -1,0 +1,15 @@
+<configs>
+	<append xpath="/recipes">
+
+		<recipe name="blockABB" count="1"
+				tags="learnable,workbenchCrafting"
+				area="workbench" material_based="false"
+				craft_time="300">
+			<ingredient name="resourceForgedIron" count="100"/>
+			<ingredient name="resourceMechanicalParts" count="10"/>
+			<ingredient name="resourceElectricParts" count="5"/>
+			<ingredient name="carBattery" count="1"/>
+		</recipe>
+
+	</append>
+</configs>

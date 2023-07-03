@@ -272,6 +272,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AutoBaseBuilder
       objectReference: {fileID: 0}
+    - target: {fileID: 6164015569360272970, guid: 8e8468bd2d30afb459e71b29235deecc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e8468bd2d30afb459e71b29235deecc, type: 3}
 --- !u!1 &963194225
@@ -350,11 +354,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.88, z: -5.1}
+  m_LocalRotation: {x: 0.3579116, y: -0, z: -0, w: 0.9337555}
+  m_LocalPosition: {x: 0.054, y: 1.072, z: -1.268}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 41.944, y: 0, z: 0}
