@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <Name value="JCPhluxControls" />
+  <DisplayName value="JCPhlux Controls" />
+  <Description value="Add extra controls for mods" />
+  <Website value="https://github.com/jcphlux/AutoBaseBuilder" />
+  <Author value="JCphlux" />
+  <Version value="2023.7.4.2216" />
+</xml>

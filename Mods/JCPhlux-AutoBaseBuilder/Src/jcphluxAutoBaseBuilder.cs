@@ -3,8 +3,6 @@ using System.Reflection;
 
 public class AutoBaseBuilder : IModApi
 {
-
-    // Entry class for A20 patching
     public void InitMod(Mod mod)
     {
         Log.Out("JCPhlux AutoBaseBuilder Harmony Patch: " + GetType().ToString());

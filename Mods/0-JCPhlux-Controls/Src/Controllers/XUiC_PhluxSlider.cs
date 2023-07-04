@@ -1,11 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-public delegate void XUiEvent_BetterSliderValueChanged(XUiC_BetterSlider _sender);
-public class XUiC_BetterSlider : XUiController
+public delegate void XUiEvent_PhluxSliderValueChanged(XUiC_PhluxSlider _sender);
+public class XUiC_PhluxSlider : XUiController
 {
-    protected XUiC_BetterSliderThumb thumbController;
-    protected XUiC_BetterSliderBar barController;
+    protected XUiC_PhluxSliderThumb thumbController;
+    protected XUiC_PhluxSliderBar barController;
     protected string name;
     protected float minVal = 0f;
     protected float maxVal = 1f;
@@ -22,7 +22,7 @@ public class XUiC_BetterSlider : XUiController
 
     private readonly CachedStringFormatterFloat internalValueFormatter = new("0.00");
 
-    public event XUiEvent_BetterSliderValueChanged OnValueChanged;
+    public event XUiEvent_PhluxSliderValueChanged OnValueChanged;
 
     public Func<float, string> ValueFormatter
     {
@@ -110,14 +110,14 @@ public class XUiC_BetterSlider : XUiController
     public override void Init()
     {
         base.Init();
-        thumbController = GetChildById("thumb") as XUiC_BetterSliderThumb;
+        thumbController = GetChildById("thumb") as XUiC_PhluxSliderThumb;
         if (thumbController == null)
         {
             Log.Error("Thumb slider not found!");
         }
         else
         {
-            barController = GetChildById("bar") as XUiC_BetterSliderBar;
+            barController = GetChildById("bar") as XUiC_PhluxSliderBar;
             if (barController == null)
             {
                 Log.Error("Thumb bar not found!");

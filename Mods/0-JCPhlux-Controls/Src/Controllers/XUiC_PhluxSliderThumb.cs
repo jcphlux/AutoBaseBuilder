@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 
-public class XUiC_BetterSliderThumb : XUiController
+public class XUiC_PhluxSliderThumb : XUiController
 {
     private Vector2i lastMousePos = new(-100000, -100000);
     private bool isOver;
     private bool isDragging;
     private float left;
     private float width;
-    private XUiC_BetterSlider sliderController;
-    private XUiC_BetterSliderBar sliderBarController;
+    private XUiC_PhluxSlider sliderController;
+    private XUiC_PhluxSliderBar sliderBarController;
 
     public float ThumbPosition
     {
@@ -26,8 +26,8 @@ public class XUiC_BetterSliderThumb : XUiController
     {
         base.Init();
         ViewComponent.EventOnHover = true;
-        sliderController = GetParentByType<XUiC_BetterSlider>();
-        sliderBarController = sliderController.GetChildByType<XUiC_BetterSliderBar>();
+        sliderController = GetParentByType<XUiC_PhluxSlider>();
+        sliderBarController = sliderController.GetChildByType<XUiC_PhluxSliderBar>();
     }
 
     public void SetDimensions(float _left, float _width)

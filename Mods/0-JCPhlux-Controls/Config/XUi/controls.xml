@@ -1,0 +1,16 @@
+﻿<configs patcher-version="4">
+	<append xpath="/controls">
+		<phluxslider depth="1" pos="0,0" width="200">
+			<rect name="${name}" depth="${depth}" controller="PhluxSlider, JCPhlux.Controls" pos="${pos}" width="${width}" height="62" >
+				<label depth="1" pos="0, -6"  width="${width}" height="28" text="{name}: {value}" visible="{visible}"/>
+				<rect pos="2,-34">
+					<sprite name="bar" controller="PhluxSliderBar, JCPhlux.Controls" depth="1" pos="4, -5" color="[mediumGrey]" width="${width-12}" height="20" type="sliced" style="press, scroll" visible="{visible}"/>
+					<sprite depth="2" pos="4, -5" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false" width="${width-12}" height="20" foregroundlayer="true" visible="{visible}"/>
+					<sprite name="thumb" controller="PhluxSliderThumb, JCPhlux.Controls" depth="2" pos="${width-8}, -15" color="[darkestGrey]" width="16" height="30" style="press, hover, drag, scroll" pivot="center" visible="{visible}">
+						<sprite depth="2" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false" width="16" height="30" pivot="center"/>
+					</sprite>
+				</rect>
+			</rect>
+		</phluxslider>
+	</append>
+</configs>

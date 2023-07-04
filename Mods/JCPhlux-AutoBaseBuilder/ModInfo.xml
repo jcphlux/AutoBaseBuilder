@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <Name value="AutoBaseBuilder" />
+  <DisplayName value="JCPhlux Auto Base Builder Block" />
+  <Description value="Auto builds selected Prefab with provided blocks." />
+  <Website value="https://github.com/jcphlux/JCPhlux7D2D" />
+  <Author value="JCPhlux" />
+  <Version value="2023.7.4.2218" />
+</xml>

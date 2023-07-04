@@ -8,9 +8,9 @@ public class XUiC_ABBPrefabList : XUiController
     private XUiV_Texture prefabPreview;
     private XUiV_Label noPreviewLabel;
     private XUiC_SimpleButton btnPreview;
-    private XUiC_BetterSlider sliderHorizontalOffset;
-    private XUiC_BetterSlider sliderVerticalOffset;
-    private XUiC_BetterSlider sliderFacing;
+    private XUiC_PhluxSlider sliderHorizontalOffset;
+    private XUiC_PhluxSlider sliderVerticalOffset;
+    private XUiC_PhluxSlider sliderFacing;
     private Vector3i prefabOffset = Vector3i.zero;
     private byte prefabRotation = 0;
     private ABBPrefabInstance prefabInstance;
@@ -41,19 +41,19 @@ public class XUiC_ABBPrefabList : XUiController
         btnPreview.Enabled = false;
         btnPreview.OnPressed += OnPreviewPressed;
 
-        sliderHorizontalOffset = GetChildById("sliderHorizontalOffset") as XUiC_BetterSlider;
+        sliderHorizontalOffset = GetChildById("sliderHorizontalOffset") as XUiC_PhluxSlider;
         sliderHorizontalOffset.Label = "Horizontal Offset"; // Localization.Get("xuiSliderOffset");
         sliderHorizontalOffset.Hide();
         sliderHorizontalOffset.ValueFormatter = SliderHorizontalOffset_ValueFormatter;
         sliderHorizontalOffset.OnValueChanged += OnSliderHorizontalOffsetChanged;
 
-        sliderVerticalOffset = GetChildById("sliderVerticalOffset") as XUiC_BetterSlider;
+        sliderVerticalOffset = GetChildById("sliderVerticalOffset") as XUiC_PhluxSlider;
         sliderVerticalOffset.Label = "Vertical Offset"; // Localization.Get("xuiSliderOffset");
         sliderVerticalOffset.Hide();
         sliderVerticalOffset.ValueFormatter = SliderVerticalOffset_ValueFormatter;
         sliderVerticalOffset.OnValueChanged += OnSliderVerticalOffsetChanged;
 
-        sliderFacing = GetChildById("sliderFacing") as XUiC_BetterSlider;
+        sliderFacing = GetChildById("sliderFacing") as XUiC_PhluxSlider;
         sliderFacing.Label = "Facing"; // Localization.Get("xuiSliderOffset");
         sliderFacing.Hide();
         sliderFacing.ValueFormatter = SliderFacing_ValueFormatter;
@@ -130,7 +130,7 @@ public class XUiC_ABBPrefabList : XUiController
 
     private string SliderHorizontalOffset_ValueFormatter(float value) => SliderHorizontalOffset_Value().ToString();
 
-    private void OnSliderHorizontalOffsetChanged(XUiC_BetterSlider _sender)
+    private void OnSliderHorizontalOffsetChanged(XUiC_PhluxSlider _sender)
     {
         if (prefabInstance == null)
             return;
@@ -163,7 +163,7 @@ public class XUiC_ABBPrefabList : XUiController
 
     private string SliderVerticalOffset_ValueFormatter(float value) => SliderVerticalOffset_Value().ToString();
 
-    private void OnSliderVerticalOffsetChanged(XUiC_BetterSlider sender)
+    private void OnSliderVerticalOffsetChanged(XUiC_PhluxSlider sender)
     {
         if (prefabInstance == null)
             return;
@@ -183,7 +183,7 @@ public class XUiC_ABBPrefabList : XUiController
 
     private string SliderFacing_ValueFormatter(float value) => ((BlockFace)SliderFacing_Value() + 2).ToString();
 
-    private void OnSliderFacingChanged(XUiC_BetterSlider _sender)
+    private void OnSliderFacingChanged(XUiC_PhluxSlider _sender)
     {
         if (prefabInstance == null)
             return;

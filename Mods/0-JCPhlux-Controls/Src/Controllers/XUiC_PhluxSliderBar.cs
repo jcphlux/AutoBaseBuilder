@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-public class XUiC_BetterSliderBar : XUiController
+public class XUiC_PhluxSliderBar : XUiController
 {
-    private XUiC_BetterSlider sliderController;
+    private XUiC_PhluxSlider sliderController;
 
     public override void Init()
     {
         base.Init();
-        sliderController = GetParentByType<XUiC_BetterSlider>();
+        sliderController = GetParentByType<XUiC_PhluxSlider>();
     }
 
     public override bool GetBindingValue(ref string value, string bindingName)

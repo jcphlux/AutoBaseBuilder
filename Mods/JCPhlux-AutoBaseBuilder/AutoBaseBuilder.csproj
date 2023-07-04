@@ -109,17 +109,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Harmony\ABBPrefabInstance.cs" />
-    <Compile Include="Harmony\BlockAutoBaseBuilder.cs" />
-    <Compile Include="Harmony\Controllers\XUiC_ABBPrefabList.cs" />
-    <Compile Include="Harmony\Controllers\XUiC_BetterSliderBar.cs" />
-    <Compile Include="Harmony\Controllers\XUiC_BetterSliderThumb.cs" />
-    <Compile Include="Harmony\Controllers\XUiC_BetterSlider.cs" />
-    <Compile Include="Harmony\JCPhluxAutoBaseBuilder.cs" />
-    <Compile Include="Harmony\TileEntityAutoBaseBuilder.cs" />
-    <Compile Include="Harmony\Controllers\XUiC_ABBPrefabFileList.cs" />
+    <Compile Include="Src\ABBPrefabInstance.cs" />
+    <Compile Include="Src\BlockAutoBaseBuilder.cs" />
+    <Compile Include="Src\Controllers\XUiC_ABBPrefabList.cs" />
+    <Compile Include="Src\JCPhluxAutoBaseBuilder.cs" />
+    <Compile Include="Src\TileEntityAutoBaseBuilder.cs" />
+    <Compile Include="Src\Controllers\XUiC_ABBPrefabFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Library\ModXmlPatcher.cs" />
+    <Compile Include="Src\Utils\ModXmlPatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\blocks.a21.xml" />
@@ -136,7 +133,6 @@
     <Content Include="Config\recipes.a20.xml" />
     <Content Include="Config\recipes.ulm.xml" />
     <Content Include="Config\recipes.xml" />
-    <Content Include="Config\XUi\controls.xml" />
     <Content Include="Config\XUi\xui.xml" />
     <Content Include="Config\XUi\windows.xml" />
     <Content Include="ModInfo.xml" />
@@ -144,6 +140,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\AutoBaseBuilder.unity3d" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\0-JCPhlux-Controls\Controls.csproj">
+      <Project>{2ebf4c03-8205-4025-be63-6013e07fc8aa}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -164,7 +166,7 @@
     <PropertyGroup>
       <VersionInfo>%(AssemblyInfo.Version)</VersionInfo>
     </PropertyGroup>
-    <Exec Command="powershell.exe .\UpdateXml.ps1 -XmlFilePath &quot;$(XmlFilePath)&quot; -AssemblyVersion &quot;$(VersionInfo)&quot;" />
+    <Exec Command="powershell.exe ..\..\Tools\Scripts\UpdateXml.ps1 -XmlFilePath &quot;$(XmlFilePath)&quot; -AssemblyVersion &quot;$(VersionInfo)&quot;" />
   </Target>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
