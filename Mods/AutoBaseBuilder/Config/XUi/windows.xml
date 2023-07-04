@@ -1,10 +1,10 @@
 ﻿<configs patcher-version="4">
 
 	<append xpath="/windows">
-		<window name="uiABBPrefabList" anchor="RightTop" pos="-310,-80" width="300" height="488" controller="ABBPrefabList, JCPhluxAutoBaseBuilder" cursor_area="true">
+		<window name="uiABBPrefabList" anchor="RightTop" pos="-310,-80" width="300" height="{hasprefab ? 688 : 488}" controller="ABBPrefabList, JCPhluxAutoBaseBuilder" cursor_area="true">
 			<panel name="content" depth="1" pivot="center" >
 				<sprite depth="3" name="border" sprite="menu_empty3px" pos="0,0" color="[black]" type="sliced" fillcenter="false" globalopacity="true" globalopacitymod="0.9" />
-				<sprite depth="1" name="backgroundMain" sprite="menu_empty3px" pos="2,-2" height="486" width="296" color="[darkGrey]" type="sliced" fillcenter="true" globalopacity="true" globalopacitymod="0.65" />
+				<sprite depth="1" name="backgroundMain" sprite="menu_empty3px" pos="2,-2"  height="{hasprefab ? 688 : 488}" width="296" color="[darkGrey]" type="sliced" fillcenter="true" globalopacity="true" globalopacitymod="0.65" />
 
 				<rect name="files" pos="0,0" height="224" controller="ABBPrefabFileList, JCPhluxAutoBaseBuilder" clear_selection_on_open="false" cursor_controllable="true">
 					<rect depth="4" name="searchControls" height="44" pos="0,-0">
@@ -32,9 +32,10 @@
 					<simplebutton name="btnPreview" pos="5, -456" depth="3" caption_key="xuiPrefabPreview" tooltip_key="ttPrefabPreview" width="290" height="30" font_size="30" />
 				</rect>
 				<!--ui_game_symbol_rotate_simple-->
-				<rect pos="5, -489" >
-					<debugslider name="sliderHorizontalOffset" depth="3" pos="0, -10" width="290" />
-					<debugslider name="sliderVerticalOffset" depth="3" pos="0, -74" width="290" />
+				<rect pos="5, -489">
+					<betterslider name="sliderHorizontalOffset" depth="3" pos="0, -10" width="290"/>
+					<betterslider name="sliderVerticalOffset" depth="3" pos="0, -74" width="290"/>
+					<betterslider name="sliderFacing" depth="3" pos="0, -138" width="290"/>
 				</rect>
 			</panel>
 		</window>

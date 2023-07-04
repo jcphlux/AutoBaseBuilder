@@ -9,8 +9,8 @@
     <ProjectGuid>{4069FB6B-DC75-4192-8208-1BF2C0EF7227}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JCPhluxAutoBaseBuilder</RootNamespace>
-    <AssemblyName>JCPhluxAutoBaseBuilder</AssemblyName>
+    <RootNamespace>JCPhlux.AutoBaseBuilder</RootNamespace>
+    <AssemblyName>JCPhlux.AutoBaseBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -112,6 +112,9 @@
     <Compile Include="Harmony\ABBPrefabInstance.cs" />
     <Compile Include="Harmony\BlockAutoBaseBuilder.cs" />
     <Compile Include="Harmony\Controllers\XUiC_ABBPrefabList.cs" />
+    <Compile Include="Harmony\Controllers\XUiC_BetterSliderBar.cs" />
+    <Compile Include="Harmony\Controllers\XUiC_BetterSliderThumb.cs" />
+    <Compile Include="Harmony\Controllers\XUiC_BetterSlider.cs" />
     <Compile Include="Harmony\JCPhluxAutoBaseBuilder.cs" />
     <Compile Include="Harmony\TileEntityAutoBaseBuilder.cs" />
     <Compile Include="Harmony\Controllers\XUiC_ABBPrefabFileList.cs" />
@@ -133,6 +136,7 @@
     <Content Include="Config\recipes.a20.xml" />
     <Content Include="Config\recipes.ulm.xml" />
     <Content Include="Config\recipes.xml" />
+    <Content Include="Config\XUi\controls.xml" />
     <Content Include="Config\XUi\xui.xml" />
     <Content Include="Config\XUi\windows.xml" />
     <Content Include="ModInfo.xml" />
