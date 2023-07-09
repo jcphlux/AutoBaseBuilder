@@ -16,7 +16,7 @@ public class XUiC_ABBPrefabList : XUiController
     private TileEntityAutoBaseBuilder tileEntity;
     private bool hasPrefab;
 
-    private int rotationToFaceNorth => prefabInstance == null ? 0 : prefabInstance.prefab.rotationToFaceNorth;
+    private int RotationToFaceNorth => prefabInstance == null ? 0 : prefabInstance.prefab.rotationToFaceNorth;
 
     public override void Init()
     {
@@ -36,19 +36,19 @@ public class XUiC_ABBPrefabList : XUiController
         btnPreview.OnPressed += OnPreviewPressed;
 
         sliderHorizontalOffset = GetChildById("sliderHorizontalOffset") as XUiC_PhluxSlider;
-        sliderHorizontalOffset.Label = "Horizontal Offset"; // Localization.Get("xuiSliderOffset");
+        sliderHorizontalOffset.Label = Localization.Get("xuiSliderHorizontalOffset");
         sliderHorizontalOffset.Hide();
         sliderHorizontalOffset.ValueFormatter = SliderHorizontalOffset_ValueFormatter;
         sliderHorizontalOffset.OnValueChanged += OnSliderHorizontalOffsetChanged;
 
         sliderVerticalOffset = GetChildById("sliderVerticalOffset") as XUiC_PhluxSlider;
-        sliderVerticalOffset.Label = "Vertical Offset"; // Localization.Get("xuiSliderOffset");
+        sliderVerticalOffset.Label = Localization.Get("xuiSliderVerticalOffset");
         sliderVerticalOffset.Hide();
         sliderVerticalOffset.ValueFormatter = SliderVerticalOffset_ValueFormatter;
         sliderVerticalOffset.OnValueChanged += OnSliderVerticalOffsetChanged;
 
         sliderFacing = GetChildById("sliderFacing") as XUiC_PhluxSlider;
-        sliderFacing.Label = "Facing"; // Localization.Get("xuiSliderOffset");
+        sliderFacing.Label = Localization.Get("xuiSliderFacing");
         sliderFacing.Hide();
         sliderFacing.ValueFormatter = SliderFacing_ValueFormatter;
         sliderFacing.OnValueChanged += OnSliderFacingChanged;
@@ -145,13 +145,15 @@ public class XUiC_ABBPrefabList : XUiController
         DynamicPrefabDecorator dpd = GameManager.Instance.GetDynamicPrefabDecorator();
         prefabInstance = new ABBPrefabInstance(dpd.GetNextId(), prefab.location, prefabPos, 0, prefab, 0);
         prefabInstance.CreateBoundingBox();
-
         dpd.AddPrefab(prefabInstance);
-
+        SelectionBox box = prefabInstance.GetBox();
+        box.EnableCollider("Untagged", 14);
+        box.SetCaptionVisibility(false);
         SelectionBoxManager.Instance.SetActive("DynamicPrefabs", prefabInstance.name, true);
-        SelectionBoxManager.Instance.GetCategory("DynamicPrefabs").SetCaptionVisibility(false);
 
         UpdateRotation();
+
+        UpdateSelectionBox();
 
         btnPreview.Enabled = false;
         RefreshBindings(true);
@@ -159,6 +161,34 @@ public class XUiC_ABBPrefabList : XUiController
         SetVerticalSlider();
         SetRotationSlider();
     }
+
+
+    private bool UpdateSelectionBox()
+    {
+        if (prefabInstance == null)
+            return false;
+
+        SelectionBox box = prefabInstance.GetBox();
+        Vector3i size = prefabInstance.boundingBoxSize;
+        Vector3i corner1 = prefabInstance.boundingBoxPosition;
+        Vector3i corner2 = corner1 + new Vector3i(size.x, 0, size.z);
+        Vector3i corner3 = corner1 + new Vector3i(0, 0, size.z);
+        Vector3i corner4 = corner1 + new Vector3i(size.x, 0, 0);
+        if (
+            !UtilsHelpers.CanBuildAtPosition(corner1) ||
+            !UtilsHelpers.CanBuildAtPosition(corner2) ||
+            !UtilsHelpers.CanBuildAtPosition(corner3) ||
+            !UtilsHelpers.CanBuildAtPosition(corner4)
+            )
+        {
+            box.SetAllFacesColor(Color.red);
+            return false;
+        }
+
+        box.SetAllFacesColor(Color.green);
+        return true;
+    }
+
 
     private void UpdateRotation()
     {
@@ -201,6 +231,7 @@ public class XUiC_ABBPrefabList : XUiController
         }
 
         prefabInstance.MoveBoundingBox(deltaVec);
+        UpdateSelectionBox();
     }
 
     private void SetHorizontalSlider()
@@ -236,6 +267,7 @@ public class XUiC_ABBPrefabList : XUiController
 
         Vector3i deltaVec = new(0, yDiff, 0);
         prefabInstance.MoveBoundingBox(deltaVec);
+        UpdateSelectionBox();
     }
 
     private void SetVerticalSlider()
@@ -251,7 +283,7 @@ public class XUiC_ABBPrefabList : XUiController
 
     private byte SliderFacing_Value() => prefabInstance == null ? (byte)0 : (byte)Mathf.RoundToInt(sliderFacing.Value);
 
-    private string SliderFacing_ValueFormatter(float value) => UtilsHelpers.BlockFaceFromSimpleRotation(SliderFacing_Value() - rotationToFaceNorth).ToString();
+    private string SliderFacing_ValueFormatter(float value) => UtilsHelpers.BlockFaceFromSimpleRotation(SliderFacing_Value() - RotationToFaceNorth).ToString();
 
     private void OnSliderFacingChanged(XUiC_PhluxSlider _sender)
     {
@@ -288,6 +320,7 @@ public class XUiC_ABBPrefabList : XUiController
 
         Vector3i prefabPos = tileEntity.ToWorldPos() + prefabOffset;
         prefabInstance.SetBoundingBoxPosition(prefabPos);
+        UpdateSelectionBox();
         SetHorizontalSlider();
     }
 
