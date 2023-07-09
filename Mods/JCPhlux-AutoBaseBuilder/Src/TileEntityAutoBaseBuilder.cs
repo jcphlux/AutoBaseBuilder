@@ -24,7 +24,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
     public Vector3i prefabOffset = Vector3i.zero;
 
     // The rotation of the prefab to be built
-    public byte prefabRotation = 0;
+    public byte? prefabRotation = null;
 
     // The tick counter for next block build
     float buildTicks = 750f;
@@ -39,12 +39,12 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 
     public bool IsOn
     {
-        get => this.isOn;
+        get => isOn;
         set
         {
-            if (this.isOn != value)
+            if (isOn != value)
             {
-                this.isOn = value;
+                isOn = value;
                 buildBlock = BlockValue.Air;
                 buildPosition = ToWorldPos();
                 //ResetBoundHelper(Color.gray);
@@ -53,12 +53,15 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         }
     }
 
+    public byte Rotation => UtilsHelpers.NormalizeSimpleRotation(blockValue.rotation);
+
     public TileEntityAutoBaseBuilder(Chunk _chunk)
         : base(_chunk)
     {
         isOn = false;
         isAccessed = false;
         buildBlock = BlockValue.Air;
+
         //var prefabList = new XUiC_PrefabList();
         // prefabList.
         //PathAbstractions.AbstractedLocation x = PathAbstractions.PrefabsSearchPaths.GetLocation("PrefabTest");
@@ -324,7 +327,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
     public override void read(PooledBinaryReader _br, TileEntity.StreamModeRead _eStreamMode)
     {
         base.read(_br, _eStreamMode);
-        this.isOn = _br.ReadBoolean();
+        isOn = _br.ReadBoolean();
         switch (_eStreamMode)
         {
             case TileEntity.StreamModeRead.Persistency:
@@ -335,23 +338,22 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
                     break;
 
                 string prefabName = _br.ReadString();
-                this.prefabLocation = PathAbstractions.PrefabsSearchPaths.GetLocation(prefabName);
+                prefabLocation = PathAbstractions.PrefabsSearchPaths.GetLocation(prefabName);
+                prefabRotation = _br.ReadByte();
 
-                this.prefabOffset.x = _br.ReadInt32();
-                this.prefabOffset.y = _br.ReadInt32();
-                this.prefabOffset.z = _br.ReadInt32();
+                prefabOffset.x = _br.ReadInt32();
+                prefabOffset.y = _br.ReadInt32();
+                prefabOffset.z = _br.ReadInt32();
 
-                this.prefabRotation = _br.ReadByte();
+                buildPosition.x = _br.ReadInt32();
+                buildPosition.y = _br.ReadInt32();
+                buildPosition.z = _br.ReadInt32();
 
-                this.buildPosition.x = _br.ReadInt32();
-                this.buildPosition.y = _br.ReadInt32();
-                this.buildPosition.z = _br.ReadInt32();
+                //bool isBuilding = _br.ReadBoolean();
 
-                bool isBuilding = _br.ReadBoolean();
+                buildTicks = _br.ReadInt32();
 
-                this.buildTicks = _br.ReadInt32();
-
-                this.lastMissingItem = _br.ReadBoolean() ? _br.ReadString() : null;
+                lastMissingItem = _br.ReadBoolean() ? _br.ReadString() : null;
                 //float progress = _br.ReadSingle();
                 //if (isOn && isBuilding)
                 //{
@@ -371,8 +373,8 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
                 //}
                 break;
             case TileEntity.StreamModeRead.FromClient:
-                this.isAccessed = _br.ReadBoolean();
-                if (this.isAccessed)
+                isAccessed = _br.ReadBoolean();
+                if (isAccessed)
                 {
                     // This will provoke an update on
                     // all clients to know new state.
@@ -394,29 +396,28 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
                 _bw.Write(IsUserAccessing());
                 break;
             case TileEntity.StreamModeWrite.ToClient:
-                _bw.Write(!this.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None));
-                if (this.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None))
+                bool hasPrefab = !prefabLocation.Equals(PathAbstractions.AbstractedLocation.None);
+                _bw.Write(hasPrefab);
+                if (!hasPrefab)
                     break;
+                _bw.Write(prefabLocation.Name);
+                _bw.Write(prefabRotation.Value);
 
-                _bw.Write(this.prefabLocation.Name);
+                _bw.Write(prefabOffset.x);
+                _bw.Write(prefabOffset.y);
+                _bw.Write(prefabOffset.z);
 
-                _bw.Write(this.prefabOffset.x);
-                _bw.Write(this.prefabOffset.y);
-                _bw.Write(this.prefabOffset.z);
+                _bw.Write(buildPosition.x);
+                _bw.Write(buildPosition.y);
+                _bw.Write(buildPosition.z);
 
-                _bw.Write(this.prefabRotation);
+                //_bw.Write(buildBlock.type != BlockValue.Air.type);
 
-                _bw.Write(this.buildPosition.x);
-                _bw.Write(this.buildPosition.y);
-                _bw.Write(this.buildPosition.z);
+                _bw.Write(buildTicks);
 
-                _bw.Write(buildBlock.type != BlockValue.Air.type);
-
-                _bw.Write(this.buildTicks);
-
-                _bw.Write(this.lastMissingItem != null);
-                if (this.lastMissingItem != null)
-                    _bw.Write(this.lastMissingItem);
+                _bw.Write(lastMissingItem != null);
+                if (lastMissingItem != null)
+                    _bw.Write(lastMissingItem);
 
                 break;
         }

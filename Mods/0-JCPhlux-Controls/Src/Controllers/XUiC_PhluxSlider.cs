@@ -164,6 +164,7 @@ public class XUiC_PhluxSlider : XUiController
         }
     }
 
+
     internal void SliderValueChanged(float _newVal)
     {
         SliderValue = _newVal;

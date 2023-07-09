@@ -5,6 +5,7 @@ public class ABBPrefabInstance : PrefabInstance
 {
     public ABBPrefabInstance(int _id, PathAbstractions.AbstractedLocation _location, Vector3i _position, byte _rotation, Prefab _bad, int _standaloneBlockSize) : base(_id, _location, _position, _rotation, _bad, _standaloneBlockSize)
     {
+
     }
 
     public new void UpdateImposterView()
