@@ -4,7 +4,6 @@
 		<!-- unlocks items via schematics only -->
 	</modif>
 	<modelse>
-		<include path="progression.a21.xml"/>
+		<include path="progression.a21.xml" />
 	</modelse>
-
 </configs>

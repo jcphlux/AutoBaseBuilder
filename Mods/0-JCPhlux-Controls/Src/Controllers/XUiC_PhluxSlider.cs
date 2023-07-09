@@ -2,37 +2,29 @@
 using UnityEngine;
 
 public delegate void XUiEvent_PhluxSliderValueChanged(XUiC_PhluxSlider _sender);
+
 public class XUiC_PhluxSlider : XUiController
 {
-    protected XUiC_PhluxSliderThumb thumbController;
+    public string Tag;
     protected XUiC_PhluxSliderBar barController;
-    protected string name;
-    protected float minVal = 0f;
-    protected float maxVal = 1f;
-    protected Func<float, string> valueFormatter;
     protected bool initialized;
     protected float left = float.NaN;
+    protected float maxVal = 1f;
+    protected float minVal = 0f;
+    protected string name;
+    protected XUiC_PhluxSliderThumb thumbController;
+    protected Func<float, string> valueFormatter;
     protected float width;
-    public string Tag;
-    private float step = 0.1f;
-    private float sliderStep = 0.1f;
-    private float val = 0f;
-    private float sliderVal = 0f;
-    private bool visible = true;
-
     private readonly CachedStringFormatterFloat internalValueFormatter = new("0.00");
+    private float sliderStep = 0.1f;
+    private float sliderVal = 0f;
+    private float step = 0.1f;
+    private float val = 0f;
+    private bool visible = true;
 
     public event XUiEvent_PhluxSliderValueChanged OnValueChanged;
 
-    public Func<float, string> ValueFormatter
-    {
-        get => valueFormatter;
-        set
-        {
-            valueFormatter = value;
-            IsDirty = true;
-        }
-    }
+    public bool IsVisible => Visible;
 
     public string Label
     {
@@ -44,19 +36,13 @@ public class XUiC_PhluxSlider : XUiController
         }
     }
 
-    public float Value
+    public float SliderStep
     {
-        get => val;
+        get => sliderStep;
         set
         {
-            float newSliderVal = Mathf.InverseLerp(minVal, maxVal, value);
-            if ((double)value == val && (double)newSliderVal == sliderVal)
-                return;
-            val = Mathf.Clamp(value, minVal, maxVal);
-            sliderVal = newSliderVal;
-            if (!thumbController.IsDragging)
-                UpdateThumb();
-            IsDirty = true;
+            step = Mathf.Clamp((maxVal - minVal) * value, minVal, maxVal);
+            sliderStep = Mathf.Clamp01(value);
         }
     }
 
@@ -86,13 +72,29 @@ public class XUiC_PhluxSlider : XUiController
         }
     }
 
-    public float SliderStep
+    public float Value
     {
-        get => sliderStep;
+        get => val;
         set
         {
-            step = Mathf.Clamp((maxVal - minVal) * value, minVal, maxVal);
-            sliderStep = Mathf.Clamp01(value);
+            float newSliderVal = Mathf.InverseLerp(minVal, maxVal, value);
+            if ((double)value == val && (double)newSliderVal == sliderVal)
+                return;
+            val = Mathf.Clamp(value, minVal, maxVal);
+            sliderVal = newSliderVal;
+            if (!thumbController.IsDragging)
+                UpdateThumb();
+            IsDirty = true;
+        }
+    }
+
+    public Func<float, string> ValueFormatter
+    {
+        get => valueFormatter;
+        set
+        {
+            valueFormatter = value;
+            IsDirty = true;
         }
     }
 
@@ -105,7 +107,28 @@ public class XUiC_PhluxSlider : XUiController
         }
     }
 
-    public bool IsVisible => Visible;
+    public override bool GetBindingValue(ref string value, string bindingName)
+    {
+        switch (bindingName)
+        {
+            case "visible":
+                value = Visible ? "True" : "False";
+                return Visible;
+
+            case "name":
+                value = name;
+                return true;
+
+            case nameof(value):
+                value = valueFormatter == null ? internalValueFormatter.Format(val) : valueFormatter(val);
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public void Hide() => Visible = false;
 
     public override void Init()
     {
@@ -131,49 +154,7 @@ public class XUiC_PhluxSlider : XUiController
         }
     }
 
-    public override void Update(float _dt)
-    {
-        base.Update(_dt);
-        if (thumbController == null || thumbController.ViewComponent == null || float.IsNaN(left) || !IsDirty)
-            return;
-        RefreshBindings();
-        IsDirty = false;
-    }
-
     public void Reset() => initialized = false;
-
-    public void Show() => Visible = true;
-
-    public void Hide() => Visible = false;
-
-    public override bool GetBindingValue(ref string value, string bindingName)
-    {
-        switch (bindingName)
-        {
-            case "visible":
-                value = Visible ? "True" : "False";
-                return Visible;
-            case "name":
-                value = name;
-                return true;
-            case nameof(value):
-                value = valueFormatter == null ? internalValueFormatter.Format(val) : valueFormatter(val);
-                return true;
-            default:
-                return false;
-        }
-    }
-
-
-    internal void SliderValueChanged(float _newVal)
-    {
-        SliderValue = _newVal;
-        if (OnValueChanged == null)
-            return;
-        OnValueChanged(this);
-    }
-
-    internal void UpdateThumb() => thumbController.ThumbPosition = SliderValue;
 
     public void Set(float value = 0f, float min = 0f, float max = 1f, float step = 0.1f)
     {
@@ -188,5 +169,25 @@ public class XUiC_PhluxSlider : XUiController
         Show();
         Set(value, min, max, step);
     }
-}
 
+    public void Show() => Visible = true;
+
+    public override void Update(float _dt)
+    {
+        base.Update(_dt);
+        if (thumbController == null || thumbController.ViewComponent == null || float.IsNaN(left) || !IsDirty)
+            return;
+        RefreshBindings();
+        IsDirty = false;
+    }
+
+    internal void SliderValueChanged(float _newVal)
+    {
+        SliderValue = _newVal;
+        if (OnValueChanged == null)
+            return;
+        OnValueChanged(this);
+    }
+
+    internal void UpdateThumb() => thumbController.ThumbPosition = SliderValue;
+}

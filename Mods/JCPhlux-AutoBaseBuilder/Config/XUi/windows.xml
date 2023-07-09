@@ -2,7 +2,7 @@
 
 	<append xpath="/windows">
 		<window name="uiABBPrefabList" anchor="RightTop" pos="-310,-80" width="300" height="{hasprefab ? 688 : 488}" controller="ABBPrefabList, JCPhlux.AutoBaseBuilder" cursor_area="true">
-			<panel name="content" depth="1" pivot="center" >
+			<panel name="content" depth="1" pivot="center">
 				<sprite depth="3" name="border" sprite="menu_empty3px" pos="0,0" color="[black]" type="sliced" fillcenter="false" globalopacity="true" globalopacitymod="0.9" />
 				<sprite depth="1" name="backgroundMain" sprite="menu_empty3px" pos="2,-2"  height="{hasprefab ? 688 : 488}" width="296" color="[darkGrey]" type="sliced" fillcenter="true" globalopacity="true" globalopacitymod="0.65" />
 
@@ -10,7 +10,7 @@
 					<rect depth="4" name="searchControls" height="44" pos="0,-0">
 						<sprite depth="8" name="backgroundMain" sprite="menu_empty2px" color="[black]" type="sliced" fillcenter="false" />
 
-						<sprite depth="4" name="searchIcon" style="icon30px" pos="5,-22" sprite="ui_game_symbol_search" pivot="Left"/>
+						<sprite depth="4" name="searchIcon" style="icon30px" pos="5,-22" sprite="ui_game_symbol_search" pivot="Left" />
 						<textfield name="searchInput" depth="5" pos="40,-22" width="160" height="30" pivot="Left" />
 
 						<panel pos="202,0" width="98" height="43">
@@ -18,13 +18,13 @@
 						</panel>
 					</rect>
 
-					<grid name="list" depth="2" rows="6" cols="1" pos="0,-44" height="180" cell_width="300" cell_height="30" repeat_content="true" arrangement="vertical" >
+					<grid name="list" depth="2" rows="6" cols="1" pos="0,-44" height="180" cell_width="300" cell_height="30" repeat_content="true" arrangement="vertical">
 						<prefab_file_entry width="300" height="30" />
 					</grid>
 				</rect>
 
 				<panel name="previewFrame" depth="2" pos="3,-226" width="294" height="225" disableautobackground="true" snap="false">
-					<texture depth="2" name="prefabPreview" material="Materials/Transparent Colored" globalopacity="false"/>
+					<texture depth="2" name="prefabPreview" material="Materials/Transparent Colored" globalopacity="false" />
 					<label depth="1" name="noPreview" pos="0, -110" width="300" height="28" text="No preview image" font_size="28" color="[red]" justify="center" pivot="left" />
 				</panel>
 
@@ -33,9 +33,9 @@
 				</rect>
 				<!--ui_game_symbol_rotate_simple-->
 				<rect pos="5, -489">
-					<phluxslider name="sliderHorizontalOffset" depth="3" pos="0, -10" width="290"/>
-					<phluxslider name="sliderVerticalOffset" depth="3" pos="0, -74" width="290"/>
-					<phluxslider name="sliderFacing" depth="3" pos="0, -138" width="290"/>
+					<phluxslider name="sliderHorizontalOffset" depth="3" pos="0, -10" width="290" />
+					<phluxslider name="sliderVerticalOffset" depth="3" pos="0, -74" width="290" />
+					<phluxslider name="sliderFacing" depth="3" pos="0, -138" width="290" />
 				</rect>
 			</panel>
 		</window>

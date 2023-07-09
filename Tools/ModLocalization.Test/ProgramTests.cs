@@ -1,17 +1,13 @@
-using NUnit.Framework;
-using Moq;
-using ModLocalization;
-using System.IO;
-using System.Reflection;
 using ModLocalization.Record;
+using System.Reflection;
 
 namespace ModLocalization.Tests
 {
     [TestFixture]
     public class TranslationUpdaterTests
     {
-        private TranslationUpdater translationUpdater;
         private string tempCsvFilePath;
+        private TranslationUpdater translationUpdater;
 
         [SetUp]
         public void Setup()
@@ -82,6 +78,7 @@ namespace ModLocalization.Tests
 
             // ... Additional assertions if needed ...
         }
+
         private int GetPropertyCount<T>()
         {
             Type type = typeof(T);
@@ -99,6 +96,5 @@ namespace ModLocalization.Tests
                 writer.WriteLine("jcphluxBlockTest,UI,Menu,\"This is a {0} test {1}\"");
             }
         }
-
     }
 }

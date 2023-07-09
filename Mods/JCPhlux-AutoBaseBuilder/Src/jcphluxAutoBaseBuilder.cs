@@ -24,5 +24,4 @@ public class AutoBaseBuilder : IModApi
             return true;
         }
     }
-
 }

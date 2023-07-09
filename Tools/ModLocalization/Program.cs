@@ -1,15 +1,45 @@
-﻿using System.Globalization;
-using System.Reflection;
-using System.Text;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Google.Cloud.Translation.V2;
 using ModLocalization.Record;
+using System.Globalization;
+using System.Reflection;
+using System.Text;
 
 namespace ModLocalization
 {
+    public class Program
+    {
+        public static void Run(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Please provide a file path as a command-line argument.");
+                return;
+            }
+
+            string csvFile = args[0];
+
+            var translationUpdater = new TranslationUpdater();
+
+            if (translationUpdater.UpdateTranslations(csvFile))
+            {
+                Console.WriteLine("Translations updated.");
+            }
+            else
+            {
+                Console.WriteLine("No updates found.");
+            }
+        }
+
+        private static void Main(string[] args)
+        {
+            Run(args);
+        }
+    }
+
     public class TranslationUpdater
-    {      
+    {
         public bool UpdateTranslations(string csvFile)
         {
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -17,7 +47,7 @@ namespace ModLocalization
                 Encoding = Encoding.UTF8,
                 Delimiter = ",",
                 HasHeaderRecord = true,
-                PrepareHeaderForMatch = args => args.Header.ToLower(),        
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
                 HeaderValidated = null,
                 MissingFieldFound = null,
             };
@@ -106,36 +136,6 @@ namespace ModLocalization
             TranslationResult result = client.TranslateText(text, targetLanguageCode, sourceLanguage);
 
             return result.TranslatedText;
-        }
-    }
-
-    public class Program
-    {
-        static void Main(string[] args)
-        {
-            Run(args);
-        }
-
-        public static void Run(string[] args)
-        {
-            if (args.Length == 0)
-            {
-                Console.WriteLine("Please provide a file path as a command-line argument.");
-                return;
-            }
-
-            string csvFile = args[0];
-            
-            var translationUpdater = new TranslationUpdater();
-
-            if (translationUpdater.UpdateTranslations(csvFile))
-            {
-                Console.WriteLine("Translations updated.");
-            }
-            else
-            {
-                Console.WriteLine("No updates found.");
-            }
         }
     }
 }

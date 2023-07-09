@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-
 public class XUiC_ABBPrefabFileList : XUiC_PrefabFileList
 {
     private readonly List<PathAbstractions.AbstractedLocation> prefabSearchList = new List<PathAbstractions.AbstractedLocation>();
@@ -21,7 +20,5 @@ public class XUiC_ABBPrefabFileList : XUiC_PrefabFileList
         this.allEntries.Sort();
         SelectedEntry = null;
         RefreshView(_resetFilter);
-
     }
 }
-

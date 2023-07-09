@@ -9,5 +9,4 @@ public class JCPhluxControls : IModApi
         Harmony harmony = new Harmony(GetType().ToString());
         harmony.PatchAll(Assembly.GetExecutingAssembly());
     }
-
 }

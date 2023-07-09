@@ -4,12 +4,6 @@ public class XUiC_PhluxSliderBar : XUiController
 {
     private XUiC_PhluxSlider sliderController;
 
-    public override void Init()
-    {
-        base.Init();
-        sliderController = GetParentByType<XUiC_PhluxSlider>();
-    }
-
     public override bool GetBindingValue(ref string value, string bindingName)
     {
         switch (bindingName)
@@ -18,9 +12,16 @@ public class XUiC_PhluxSliderBar : XUiController
                 bool isVisible = sliderController != null && sliderController.IsVisible;
                 value = isVisible ? "True" : "False";
                 return isVisible;
+
             default:
                 return false;
         }
+    }
+
+    public override void Init()
+    {
+        base.Init();
+        sliderController = GetParentByType<XUiC_PhluxSlider>();
     }
 
     protected override void OnPressed(int _mouseButton)
@@ -44,4 +45,3 @@ public class XUiC_PhluxSliderBar : XUiController
         sliderController.SliderValueChanged(sliderController.SliderValue + Mathf.Clamp(_delta, -sliderController.SliderStep, sliderController.SliderStep));
     }
 }
-

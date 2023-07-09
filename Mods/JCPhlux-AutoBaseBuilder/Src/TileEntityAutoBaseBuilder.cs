@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 {
-    public float buildSpeed = 750f;
-
     // The acquired block to be built
     public BlockValue buildBlock = BlockValue.Air;
 
     // The position of the block being built
     public Vector3i buildPosition = Vector3i.zero;
+
+    public float buildSpeed = 750f;
 
     // Flag only for server side code
     public bool isAccessed;
@@ -27,16 +27,26 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
     public byte? prefabRotation = null;
 
     // The tick counter for next block build
-    float buildTicks = 750f;
+    private float buildTicks = 750f;
 
+    private bool isOn;
     private string lastMissingItem = null;
+
+    public TileEntityAutoBaseBuilder(Chunk _chunk)
+            : base(_chunk)
+    {
+        isOn = false;
+        isAccessed = false;
+        buildBlock = BlockValue.Air;
+
+        //var prefabList = new XUiC_PrefabList();
+        // prefabList.
+        //PathAbstractions.AbstractedLocation x = PathAbstractions.PrefabsSearchPaths.GetLocation("PrefabTest");
+    }
 
     // Some basic stats from searches
     //bool hadDamagedBlock = false;
     //bool hadBlockOutside = false;
-
-    private bool isOn;
-
     public bool IsOn
     {
         get => isOn;
@@ -55,20 +65,86 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 
     public byte Rotation => UtilsHelpers.NormalizeSimpleRotation(blockValue.rotation);
 
-    public TileEntityAutoBaseBuilder(Chunk _chunk)
-        : base(_chunk)
+    public int GetItemCount(Block.SItemNameCount sitem)
     {
-        isOn = false;
-        isAccessed = false;
-        buildBlock = BlockValue.Air;
-
-        //var prefabList = new XUiC_PrefabList();
-        // prefabList.
-        //PathAbstractions.AbstractedLocation x = PathAbstractions.PrefabsSearchPaths.GetLocation("PrefabTest");
-
+        int having = 0;
+        for (int i = 0; i < items.Length; i++)
+        {
+            ItemStack stack = items[i];
+            if (stack.IsEmpty()) continue;
+            // ToDo: how expensive is this call for `GetItem(string)`?
+            if (stack.itemValue.type == ItemClass.GetItem(sitem.ItemName).type)
+            {
+                // Always leave at least one item in the slot
+                having += stack.count;
+            }
+        }
+        return having;
     }
 
     public override TileEntityType GetTileEntityType() => (TileEntityType)242;
+
+    public override void read(PooledBinaryReader _br, TileEntity.StreamModeRead _eStreamMode)
+    {
+        base.read(_br, _eStreamMode);
+        isOn = _br.ReadBoolean();
+        switch (_eStreamMode)
+        {
+            case TileEntity.StreamModeRead.Persistency:
+                break;
+
+            case TileEntity.StreamModeRead.FromServer:
+                bool hasPrefab = _br.ReadBoolean();
+                if (!hasPrefab)
+                    break;
+
+                string prefabName = _br.ReadString();
+                prefabLocation = PathAbstractions.PrefabsSearchPaths.GetLocation(prefabName);
+                prefabRotation = _br.ReadByte();
+
+                prefabOffset.x = _br.ReadInt32();
+                prefabOffset.y = _br.ReadInt32();
+                prefabOffset.z = _br.ReadInt32();
+
+                buildPosition.x = _br.ReadInt32();
+                buildPosition.y = _br.ReadInt32();
+                buildPosition.z = _br.ReadInt32();
+
+                //bool isBuilding = _br.ReadBoolean();
+
+                buildTicks = _br.ReadInt32();
+
+                lastMissingItem = _br.ReadBoolean() ? _br.ReadString() : null;
+                //float progress = _br.ReadSingle();
+                //if (isOn && isBuilding)
+                //{
+                //    EnableBoundHelper(progress);
+                //}
+                //else if (hadBlockOutside)
+                //{
+                //    ResetBoundHelper(Color.red);
+                //}
+                //else if (hadDamagedBlock)
+                //{
+                //    ResetBoundHelper(orange);
+                //}
+                //else
+                //{
+                //    ResetBoundHelper(Color.gray);
+                //}
+                break;
+
+            case TileEntity.StreamModeRead.FromClient:
+                isAccessed = _br.ReadBoolean();
+                if (isAccessed)
+                {
+                    // This will provoke an update on
+                    // all clients to know new state.
+                    ResetAcquiredBlock("weapon_jam");
+                }
+                break;
+        }
+    }
 
     public void ReduceItemCount(Block.SItemNameCount sitem, int count)
     {
@@ -94,25 +170,6 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
             }
         }
     }
-
-    public int GetItemCount(Block.SItemNameCount sitem)
-    {
-        int having = 0;
-        for (int i = 0; i < items.Length; i++)
-        {
-            ItemStack stack = items[i];
-            if (stack.IsEmpty()) continue;
-            // ToDo: how expensive is this call for `GetItem(string)`?
-            if (stack.itemValue.type == ItemClass.GetItem(sitem.ItemName).type)
-            {
-                // Always leave at least one item in the slot
-                having += stack.count;
-            }
-        }
-        return having;
-    }
-
-
 
     //public bool CanRepairBlock(Block block)
     //{
@@ -166,6 +223,61 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 
     //static Color orange = new Color(1f, 0.6f, 0f);
 
+    public void ResetAcquiredBlock(string playSound = "", bool broadcast = true)
+    {
+        if (buildBlock.type != BlockValue.Air.type)
+        {
+            // Play optional sound (only at the server to broadcast everywhere)
+            if (playSound != "" && SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
+            {
+                GameManager.Instance.PlaySoundAtPositionServer(
+                    ToWorldPos().ToVector3(), playSound,
+                    AudioRolloffMode.Logarithmic, 100);
+            }
+            // Reset acquired build block
+            buildBlock = BlockValue.Air;
+            buildPosition = ToWorldPos();
+            buildTicks = buildSpeed;
+            //ResetBoundHelper(Color.gray);
+            if (broadcast)
+            {
+                SetModified();
+            }
+        }
+    }
+
+    public override void SetUserAccessing(bool _bUserAccessing)
+    {
+        if (IsUserAccessing() != _bUserAccessing)
+        {
+            base.SetUserAccessing(_bUserAccessing);
+            //hadDamagedBlock = false;
+            //hadBlockOutside = false;
+            if (_bUserAccessing)
+            {
+                if (lastMissingItem != null)
+                {
+                    var player = GameManager.Instance?.World?.GetPrimaryPlayer();
+                    string msg = Localization.Get("xuiBlockABBMissed");
+                    if (string.IsNullOrEmpty(msg)) msg = "Base Auto Builder could use {0}";
+                    msg = string.Format(msg, ItemClass.GetItemClass(lastMissingItem).GetLocalizedItemName());
+                    GameManager.Instance.ChatMessageServer(
+                        (ClientInfo)null,
+                        EChatType.Whisper,
+                        player.entityId,
+                        msg,
+                        string.Empty, false,
+                        new List<int> { player.entityId });
+                    lastMissingItem = null;
+                }
+
+                ResetAcquiredBlock("weapon_jam", false);
+                SetModified(); // Force update
+            }
+            // SetModified is already called OnClose
+        }
+    }
+
     public void TickBuild(World world)
     {
         //WorldBiomeProviderFromImage.GetBiomeAt(int x, int z)
@@ -179,7 +291,6 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         //    // Check if we have a block for repair acquired
         //    if (buildBlock.type != BlockValue.Air.type)
         //    {
-
         //        // Get block currently at the position we try to repair
         //        BlockValue currentValue = world.GetBlock(buildPosition);
         //        // Check if any of the stats changed after we acquired to block
@@ -245,7 +356,6 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         //    }
         //    else
         //    {
-
         //        // Get size of land claim blocks to look for valid blocks to repair
         //        int claimSize = (GameStats.GetInt(EnumGameStats.LandClaimSize) - 1) / 2;
 
@@ -261,7 +371,6 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         //        // Repair block has slightly further reach
         //        for (int i = 1; i <= claimSize + 5; i += 1)
         //        {
-
         //            // Get a random block and see if it need repair
         //            Vector3i randomPos = GetRandomPos(world, worldPos, i);
         //            BlockValue blockValue = world.GetBlock(randomPos);
@@ -324,63 +433,19 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         //    }
     }
 
-    public override void read(PooledBinaryReader _br, TileEntity.StreamModeRead _eStreamMode)
+    public override void UpdateTick(World world)
     {
-        base.read(_br, _eStreamMode);
-        isOn = _br.ReadBoolean();
-        switch (_eStreamMode)
+        base.UpdateTick(world);
+
+        // Check if storage is being accessed
+        if (!IsOn || IsUserAccessing() || isAccessed)
         {
-            case TileEntity.StreamModeRead.Persistency:
-                break;
-            case TileEntity.StreamModeRead.FromServer:
-                bool hasPrefab = _br.ReadBoolean();
-                if (!hasPrefab)
-                    break;
-
-                string prefabName = _br.ReadString();
-                prefabLocation = PathAbstractions.PrefabsSearchPaths.GetLocation(prefabName);
-                prefabRotation = _br.ReadByte();
-
-                prefabOffset.x = _br.ReadInt32();
-                prefabOffset.y = _br.ReadInt32();
-                prefabOffset.z = _br.ReadInt32();
-
-                buildPosition.x = _br.ReadInt32();
-                buildPosition.y = _br.ReadInt32();
-                buildPosition.z = _br.ReadInt32();
-
-                //bool isBuilding = _br.ReadBoolean();
-
-                buildTicks = _br.ReadInt32();
-
-                lastMissingItem = _br.ReadBoolean() ? _br.ReadString() : null;
-                //float progress = _br.ReadSingle();
-                //if (isOn && isBuilding)
-                //{
-                //    EnableBoundHelper(progress);
-                //}
-                //else if (hadBlockOutside)
-                //{
-                //    ResetBoundHelper(Color.red);
-                //}
-                //else if (hadDamagedBlock)
-                //{
-                //    ResetBoundHelper(orange);
-                //}
-                //else
-                //{
-                //    ResetBoundHelper(Color.gray);
-                //}
-                break;
-            case TileEntity.StreamModeRead.FromClient:
-                isAccessed = _br.ReadBoolean();
-                if (isAccessed)
-                {
-                    // This will provoke an update on
-                    // all clients to know new state.
-                    ResetAcquiredBlock("weapon_jam");
-                }
-                break;
+            ResetAcquiredBlock("weapon_jam");
+        }
+        else
+        {
+            // Call regular Tick
+            TickBuild(world);
         }
     }
 
@@ -392,9 +457,11 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         {
             case TileEntity.StreamModeWrite.Persistency:
                 break;
+
             case TileEntity.StreamModeWrite.ToServer:
                 _bw.Write(IsUserAccessing());
                 break;
+
             case TileEntity.StreamModeWrite.ToClient:
                 bool hasPrefab = !prefabLocation.Equals(PathAbstractions.AbstractedLocation.None);
                 _bw.Write(hasPrefab);
@@ -420,78 +487,6 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
                     _bw.Write(lastMissingItem);
 
                 break;
-        }
-    }
-
-    public void ResetAcquiredBlock(string playSound = "", bool broadcast = true)
-    {
-        if (buildBlock.type != BlockValue.Air.type)
-        {
-            // Play optional sound (only at the server to broadcast everywhere)
-            if (playSound != "" && SingletonMonoBehaviour<ConnectionManager>.Instance.IsServer)
-            {
-                GameManager.Instance.PlaySoundAtPositionServer(
-                    ToWorldPos().ToVector3(), playSound,
-                    AudioRolloffMode.Logarithmic, 100);
-            }
-            // Reset acquired build block
-            buildBlock = BlockValue.Air;
-            buildPosition = ToWorldPos();
-            buildTicks = buildSpeed;
-            //ResetBoundHelper(Color.gray);
-            if (broadcast)
-            {
-                SetModified();
-            }
-        }
-    }
-
-    public override void UpdateTick(World world)
-    {
-        base.UpdateTick(world);
-
-        // Check if storage is being accessed
-        if (!IsOn || IsUserAccessing() || isAccessed)
-        {
-            ResetAcquiredBlock("weapon_jam");
-        }
-        else
-        {
-            // Call regular Tick
-            TickBuild(world);
-        }
-
-    }
-
-    public override void SetUserAccessing(bool _bUserAccessing)
-    {
-        if (IsUserAccessing() != _bUserAccessing)
-        {
-            base.SetUserAccessing(_bUserAccessing);
-            //hadDamagedBlock = false;
-            //hadBlockOutside = false;
-            if (_bUserAccessing)
-            {
-                if (lastMissingItem != null)
-                {
-                    var player = GameManager.Instance?.World?.GetPrimaryPlayer();
-                    string msg = Localization.Get("xuiBlockABBMissed");
-                    if (string.IsNullOrEmpty(msg)) msg = "Base Auto Builder could use {0}";
-                    msg = string.Format(msg, ItemClass.GetItemClass(lastMissingItem).GetLocalizedItemName());
-                    GameManager.Instance.ChatMessageServer(
-                        (ClientInfo)null,
-                        EChatType.Whisper,
-                        player.entityId,
-                        msg,
-                        string.Empty, false,
-                        new List<int> { player.entityId });
-                    lastMissingItem = null;
-                }
-
-                ResetAcquiredBlock("weapon_jam", false);
-                SetModified(); // Force update
-            }
-            // SetModified is already called OnClose
         }
     }
 
@@ -522,7 +517,4 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
     //        componentsInChild.material.SetColor("_Color", color * 0.5f);
     //    lastColor = color;
     //}
-
-
-
 }

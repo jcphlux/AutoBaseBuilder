@@ -2,7 +2,7 @@
 
 	<append xpath="/xui/ruleset[@name='default']">
 		<window_group name="uiABBPrefabList">
-			<window name="uiABBPrefabList"/>
+			<window name="uiABBPrefabList" />
 		</window_group>
 	</append>
 </configs>

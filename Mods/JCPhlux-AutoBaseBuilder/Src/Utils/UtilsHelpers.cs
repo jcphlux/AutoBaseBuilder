@@ -15,36 +15,6 @@ internal static class UtilsHelpers
 
     internal static object BlockFaceFromSimpleRotation(int rotation) => BlockFaceFromSimpleRotation((byte)rotation);
 
-    internal static byte SimpleRotationFromBlockFace(BlockFace face) => face switch
-    {
-        BlockFace.North => 0,
-        BlockFace.East => 1,
-        BlockFace.South => 2,
-        BlockFace.West => 3,
-        _ => throw new ArgumentOutOfRangeException(),
-    };
-
-    internal static byte NormalizeSimpleRotation(byte rotation) => rotation switch
-    {
-        27 => 0,
-        26 => 1,
-        25 => 2,
-        24 => 3,
-        _ => (byte)(rotation % 4),
-    };
-
-    internal static byte NormalizeSimpleRotation(int rotation) => NormalizeSimpleRotation((byte)rotation);
-
-    internal static byte MirrorSimpleRotation(byte rotation) => NormalizeSimpleRotation(rotation) switch
-    {
-        0 => 2,
-        1 => 3,
-        2 => 0,
-        3 => 1,
-        _ => throw new ArgumentOutOfRangeException(),
-    };
-
-
     internal static bool CanBuildAtPosition(Vector3i pos) => GameManager.Instance.World.CanPlaceBlockAt(pos, GameManager.Instance.World.GetGameManager().GetPersistentLocalPlayer(), false);
 
     internal static bool CanBuildAtPosition(
@@ -55,14 +25,12 @@ internal static class UtilsHelpers
         int claimSize,
         bool includeAllies)
     {
-
         Vector3i worldPos = chunk.GetWorldPos();
         // Check if block to be repaired is within a trader area?
         if (world.IsWithinTraderArea(worldPos + blockPos)) return false;
 
         foreach (var player in world.gameManager.GetPersistentPlayerList().Players)
         {
-
             PersistentPlayerData playerData = player.Value;
             // PlatformUserIdentifierAbs playerId = player.Key;
 
@@ -93,11 +61,38 @@ internal static class UtilsHelpers
                     }
                 }
             }
-
         }
 
         // Not inside my claim
         return false;
     }
 
+    internal static byte MirrorSimpleRotation(byte rotation) => NormalizeSimpleRotation(rotation) switch
+    {
+        0 => 2,
+        1 => 3,
+        2 => 0,
+        3 => 1,
+        _ => throw new ArgumentOutOfRangeException(),
+    };
+
+    internal static byte NormalizeSimpleRotation(byte rotation) => rotation switch
+    {
+        27 => 0,
+        26 => 1,
+        25 => 2,
+        24 => 3,
+        _ => (byte)(rotation % 4),
+    };
+
+    internal static byte NormalizeSimpleRotation(int rotation) => NormalizeSimpleRotation((byte)rotation);
+
+    internal static byte SimpleRotationFromBlockFace(BlockFace face) => face switch
+    {
+        BlockFace.North => 0,
+        BlockFace.East => 1,
+        BlockFace.South => 2,
+        BlockFace.West => 3,
+        _ => throw new ArgumentOutOfRangeException(),
+    };
 }

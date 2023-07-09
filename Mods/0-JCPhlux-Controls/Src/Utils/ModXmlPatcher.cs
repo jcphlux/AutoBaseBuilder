@@ -33,11 +33,150 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-static class ModXmlPatcher
+internal static class ModXmlPatcher
 {
-
     // Must be set from outside first, otherwise not much happens
     public static Dictionary<string, Func<bool>> Conditions = null;
+
+    // We need to call into the private function to proceed with XML patching
+    private static readonly MethodInfo MethodSinglePatch = AccessTools.Method(typeof(XmlPatcher), "singlePatch");
+
+    private static int count = 0;
+
+    // Basically the same function as `XmlPatcher.PatchXml`
+    // Patched to support `include` and `modif` XML elements
+    public static bool PatchXml(XmlFile xmlFile, XmlFile patchXml, XElement node, string patchName)
+    {
+        bool result = true;
+        count++;
+        ParserStack stack = new ParserStack();
+        stack.count = count;
+        foreach (XElement child in node.Elements())
+        {
+            if (child.NodeType == XmlNodeType.Element)
+            {
+                if (!(child is XElement element)) continue;
+                // Patched to support includes
+                if (child.Name == "include")
+                {
+                    // Will do the magic by calling our functions again
+                    IncludeAnotherDocument(xmlFile, patchXml, element, patchName);
+                }
+                else if (child.Name == "echo")
+                {
+                    foreach (XAttribute attr in child.Attributes())
+                    {
+                        if (attr.Name == "log") Log.Out("{1}: {0}", attr.Value, xmlFile.Filename);
+                        if (attr.Name == "warn") Log.Warning("{1}: {0}", attr.Value, xmlFile.Filename);
+                        if (attr.Name == "error") Log.Error("{1}: {0}", attr.Value, xmlFile.Filename);
+                        if (attr.Name != "log" && attr.Name != "warn" && attr.Name != "error")
+                            Log.Warning("Echo has no valid name (log, warn or error)");
+                    }
+                }
+                // Otherwise try to apply the patches found in child element
+                else if (!ApplyPatchEntry(xmlFile, patchXml, element, patchName, ref stack))
+                {
+                    IXmlLineInfo lineInfo = (IXmlLineInfo)element;
+                    Log.Warning(string.Format("XML patch for \"{0}\" from mod \"{1}\" did not apply: {2} (line {3} at pos {4})",
+                        xmlFile.Filename, patchName, element.ToString(), lineInfo.LineNumber, lineInfo.LinePosition));
+                    result = false;
+                }
+            }
+        }
+        return result;
+    }
+
+    // Entry point instead of (private) `XmlPatcher.singlePatch`
+    // Implements conditional patching and also allows includes
+    private static bool ApplyPatchEntry(XmlFile _xmlFile, XmlFile _patchXml, XElement _patchElement, string _patchName, ref ParserStack stack)
+    {
+        // Only support root level
+        switch (_patchElement.Name.ToString())
+        {
+            case "include":
+
+                // Call out to our include handler
+                return IncludeAnotherDocument(_xmlFile, _patchXml,
+                    _patchElement, _patchName);
+
+            case "modif":
+
+                // Reset flags first
+                stack.IfClauseParsed = true;
+                stack.PreviousResult = false;
+
+                // Check if we have true conditions
+                foreach (XAttribute attr in _patchElement.Attributes())
+                {
+                    // Ignore unknown attributes for now
+                    if (attr.Name != "condition")
+                    {
+                        Log.Warning("Ignoring unknown attribute {0}", attr.Name);
+                        continue;
+                    }
+                    // Evaluate one or'ed condition
+                    if (EvaluateConditions(attr.Value, _xmlFile))
+                    {
+                        stack.PreviousResult = true;
+                        return PatchXml(_xmlFile, _patchXml,
+                            _patchElement, _patchName);
+                    }
+                }
+
+                // Nothing failed!?
+                return true;
+
+            case "modelsif":
+
+                // Check for correct parser state
+                if (!stack.IfClauseParsed)
+                {
+                    Log.Error("Found <modelsif> clause out of order");
+                    return false;
+                }
+
+                // Abort else when last result was true
+                if (stack.PreviousResult) return true;
+
+                // Check if we have true conditions
+                foreach (XAttribute attr in _patchElement.Attributes())
+                {
+                    // Ignore unknown attributes for now
+                    if (attr.Name != "condition")
+                    {
+                        Log.Warning("Ignoring unknown attribute {0}", attr.Name);
+                        continue;
+                    }
+                    // Evaluate one or'ed condition
+                    if (EvaluateConditions(attr.Value, _xmlFile))
+                    {
+                        stack.PreviousResult = true;
+                        return PatchXml(_xmlFile, _patchXml,
+                            _patchElement, _patchName);
+                    }
+                }
+
+                // Nothing failed!?
+                return true;
+
+            case "modelse":
+
+                // Reset flags first
+                stack.IfClauseParsed = false;
+                // Abort else when last result was true
+                if (stack.PreviousResult) return true;
+                return PatchXml(_xmlFile, _patchXml,
+                    _patchElement, _patchName);
+
+            default:
+                // Reset flags first
+                stack.IfClauseParsed = false;
+                stack.PreviousResult = true;
+                // Dispatch to original function
+                return (bool)MethodSinglePatch.Invoke(null,
+                    new object[] { _xmlFile, _patchElement, _patchName });
+        }
+    }
 
     // Evaluates one single condition (can be negated)
     private static bool EvaluateCondition(string condition)
@@ -140,9 +279,6 @@ static class ModXmlPatcher
         return true;
     }
 
-    // We need to call into the private function to proceed with XML patching
-    private static readonly MethodInfo MethodSinglePatch = AccessTools.Method(typeof(XmlPatcher), "singlePatch");
-
     // Function to load another XML file and basically call the same PatchXML function again
     private static bool IncludeAnotherDocument(XmlFile target, XmlFile parent, XElement element, string modName)
     {
@@ -193,52 +329,6 @@ static class ModXmlPatcher
         return result;
     }
 
-    // Basically the same function as `XmlPatcher.PatchXml`
-    // Patched to support `include` and `modif` XML elements
-
-    static int count = 0;
-
-    public static bool PatchXml(XmlFile xmlFile, XmlFile patchXml, XElement node, string patchName)
-    {
-        bool result = true;
-        count++;
-        ParserStack stack = new ParserStack();
-        stack.count = count;
-        foreach (XElement child in node.Elements())
-        {
-            if (child.NodeType == XmlNodeType.Element)
-            {
-                if (!(child is XElement element)) continue;
-                // Patched to support includes
-                if (child.Name == "include")
-                {
-                    // Will do the magic by calling our functions again
-                    IncludeAnotherDocument(xmlFile, patchXml, element, patchName);
-                }
-                else if (child.Name == "echo")
-                {
-                    foreach (XAttribute attr in child.Attributes())
-                    {
-                        if (attr.Name == "log") Log.Out("{1}: {0}", attr.Value, xmlFile.Filename);
-                        if (attr.Name == "warn") Log.Warning("{1}: {0}", attr.Value, xmlFile.Filename);
-                        if (attr.Name == "error") Log.Error("{1}: {0}", attr.Value, xmlFile.Filename);
-                        if (attr.Name != "log" && attr.Name != "warn" && attr.Name != "error")
-                            Log.Warning("Echo has no valid name (log, warn or error)");
-                    }
-                }
-                // Otherwise try to apply the patches found in child element
-                else if (!ApplyPatchEntry(xmlFile, patchXml, element, patchName, ref stack))
-                {
-                    IXmlLineInfo lineInfo = (IXmlLineInfo)element;
-                    Log.Warning(string.Format("XML patch for \"{0}\" from mod \"{1}\" did not apply: {2} (line {3} at pos {4})",
-                        xmlFile.Filename, patchName, element.ToString(), lineInfo.LineNumber, lineInfo.LinePosition));
-                    result = false;
-                }
-            }
-        }
-        return result;
-    }
-
     // Flags for consecutive mod-if parsing
     public struct ParserStack
     {
@@ -247,106 +337,12 @@ static class ModXmlPatcher
         public bool PreviousResult;
     }
 
-    // Entry point instead of (private) `XmlPatcher.singlePatch`
-    // Implements conditional patching and also allows includes
-    private static bool ApplyPatchEntry(XmlFile _xmlFile, XmlFile _patchXml, XElement _patchElement, string _patchName, ref ParserStack stack)
-    {
-
-        // Only support root level
-        switch (_patchElement.Name.ToString())
-        {
-
-            case "include":
-
-                // Call out to our include handler
-                return IncludeAnotherDocument(_xmlFile, _patchXml,
-                    _patchElement, _patchName);
-
-            case "modif":
-
-                // Reset flags first
-                stack.IfClauseParsed = true;
-                stack.PreviousResult = false;
-
-                // Check if we have true conditions
-                foreach (XAttribute attr in _patchElement.Attributes())
-                {
-                    // Ignore unknown attributes for now
-                    if (attr.Name != "condition")
-                    {
-                        Log.Warning("Ignoring unknown attribute {0}", attr.Name);
-                        continue;
-                    }
-                    // Evaluate one or'ed condition
-                    if (EvaluateConditions(attr.Value, _xmlFile))
-                    {
-                        stack.PreviousResult = true;
-                        return PatchXml(_xmlFile, _patchXml,
-                            _patchElement, _patchName);
-                    }
-                }
-
-                // Nothing failed!?
-                return true;
-
-            case "modelsif":
-
-                // Check for correct parser state
-                if (!stack.IfClauseParsed)
-                {
-                    Log.Error("Found <modelsif> clause out of order");
-                    return false;
-                }
-
-                // Abort else when last result was true
-                if (stack.PreviousResult) return true;
-
-                // Check if we have true conditions
-                foreach (XAttribute attr in _patchElement.Attributes())
-                {
-                    // Ignore unknown attributes for now
-                    if (attr.Name != "condition")
-                    {
-                        Log.Warning("Ignoring unknown attribute {0}", attr.Name);
-                        continue;
-                    }
-                    // Evaluate one or'ed condition
-                    if (EvaluateConditions(attr.Value, _xmlFile))
-                    {
-                        stack.PreviousResult = true;
-                        return PatchXml(_xmlFile, _patchXml,
-                            _patchElement, _patchName);
-                    }
-                }
-
-                // Nothing failed!?
-                return true;
-
-            case "modelse":
-
-                // Reset flags first
-                stack.IfClauseParsed = false;
-                // Abort else when last result was true
-                if (stack.PreviousResult) return true;
-                return PatchXml(_xmlFile, _patchXml,
-                    _patchElement, _patchName);
-
-            default:
-                // Reset flags first
-                stack.IfClauseParsed = false;
-                stack.PreviousResult = true;
-                // Dispatch to original function
-                return (bool)MethodSinglePatch.Invoke(null,
-                    new object[] { _xmlFile, _patchElement, _patchName });
-        }
-    }
-
     // Hook into vanilla XML Patcher
     [HarmonyPatch(typeof(XmlPatcher))]
     [HarmonyPatch("PatchXml")]
     public class XmlPatcher_PatchXml
     {
-        static bool Prefix(
+        private static bool Prefix(
             ref XmlFile _xmlFile,
             ref XmlFile _patchXml,
             ref string _patchName,
@@ -378,5 +374,4 @@ static class ModXmlPatcher
             return false;
         }
     }
-
 }

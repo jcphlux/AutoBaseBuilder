@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using CsvHelper.Configuration;
+﻿using CsvHelper.Configuration;
+using System.Globalization;
 
 namespace ModLocalization.Record
 {

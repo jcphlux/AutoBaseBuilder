@@ -2,31 +2,29 @@
 
 	<append xpath="/blocks/block[@name='blockABB']">
 
-		<property name="UnlockedBy" value="blockABBBlueprint"/>
+		<property name="UnlockedBy" value="blockABBBlueprint" />
 
-		<property name="CarryWeight" value="2"/>
-		<property name="Stacknumber" value="5"/>
+		<property name="CarryWeight" value="2" />
+		<property name="Stacknumber" value="5" />
 
 		<property class="RepairItems">
-			<property name="resourceForgedIron" value="100"/>
-			<property name="resourceElectricParts" value="10"/>
-			<property name="resourceMechanicalParts" value="5"/>
+			<property name="resourceForgedIron" value="100" />
+			<property name="resourceElectricParts" value="10" />
+			<property name="resourceMechanicalParts" value="5" />
 		</property>
 
-		<drop event="Harvest" name="air" count="0" tool_category="Disassemble"/>
+		<drop event="Harvest" name="air" count="0" tool_category="Disassemble" />
 
-		<drop event="Harvest" name="ulmResourceScrapIron" count="10,40" tag="allHarvest"/>
-		<drop event="Harvest" name="ulmResourceScrapIron" count="10,40" tag="salvageHarvest"/>
+		<drop event="Harvest" name="ulmResourceScrapIron" count="10,40" tag="allHarvest" />
+		<drop event="Harvest" name="ulmResourceScrapIron" count="10,40" tag="salvageHarvest" />
 
-		<drop event="Destroy" name="resourceElectricParts" count="2,6" tag="salvageHarvest"/>
-		<drop event="Destroy" name="resourceMechanicalParts" count="1,3" tag="salvageHarvest"/>
+		<drop event="Destroy" name="resourceElectricParts" count="2,6" tag="salvageHarvest" />
+		<drop event="Destroy" name="resourceMechanicalParts" count="1,3" tag="salvageHarvest" />
 
-		<drop event="Harvest" name="ulmResourceElectronicFuse" prop="0.3" tag="salvageHarvest"/>
-		<drop event="Harvest" name="ulmResourceElectronicSwitch" prop="0.3" tag="salvageHarvest"/>
-		<drop event="Harvest" name="ulmResourceElectronicCircuitboard" prop="0.2" tag="salvageHarvest"/>
+		<drop event="Harvest" name="ulmResourceElectronicFuse" prop="0.3" tag="salvageHarvest" />
+		<drop event="Harvest" name="ulmResourceElectronicSwitch" prop="0.3" tag="salvageHarvest" />
+		<drop event="Harvest" name="ulmResourceElectronicCircuitboard" prop="0.2" tag="salvageHarvest" />
 
-		<drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1"/>
-
+		<drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1" />
 	</append>
-
 </configs>

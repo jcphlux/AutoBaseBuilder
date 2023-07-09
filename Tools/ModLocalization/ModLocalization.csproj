@@ -6,8 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <StartupObject>ModLocalization.Program</StartupObject>
-    <AssemblyVersion>2023.7.1.2137</AssemblyVersion>
-    <FileVersion>2023.7.1.2137</FileVersion>
+    <AssemblyVersion>2023.7.9.2242</AssemblyVersion>
+    <FileVersion>2023.7.9.2242</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

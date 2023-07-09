@@ -2,21 +2,19 @@
 
 	<append xpath="/blocks/block[@name='blockABB']">
 
-		<property name="UnlockedBy" value="craftingRepairTools"/>
+		<property name="UnlockedBy" value="craftingRepairTools" />
 
-		<property name="Stacknumber" value="5"/>
+		<property name="Stacknumber" value="5" />
 
 		<property class="RepairItems">
-			<property name="resourceForgedIron" value="100"/>
-			<property name="resourceMechanicalParts" value="10"/>
-			<property name="resourceElectricParts" value="5"/>
+			<property name="resourceForgedIron" value="100" />
+			<property name="resourceMechanicalParts" value="10" />
+			<property name="resourceElectricParts" value="5" />
 		</property>
 
-		<drop event="Destroy" name="resourceForgedIron" count="10,40"/>
-		<drop event="Destroy" name="resourceMechanicalParts" count="1,4" tag="salvageHarvest"/>
-		<drop event="Destroy" name="resourceElectricParts" count="1,10" tag="salvageHarvest"/>
-		<drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1"/>
-
+		<drop event="Destroy" name="resourceForgedIron" count="10,40" />
+		<drop event="Destroy" name="resourceMechanicalParts" count="1,4" tag="salvageHarvest" />
+		<drop event="Destroy" name="resourceElectricParts" count="1,10" tag="salvageHarvest" />
+		<drop event="Fall" name="scrapMetalPile" count="1" prob="0.75" stick_chance="1" />
 	</append>
-
 </configs>

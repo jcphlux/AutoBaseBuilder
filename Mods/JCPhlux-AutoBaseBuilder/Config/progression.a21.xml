@@ -5,7 +5,6 @@
 	</insertafter>
 
 	<append xpath="/progression/crafting_skills/crafting_skill[@name='craftingRepairTools']/effect_group">
-		<passive_effect name="RecipeTagUnlocked" operation="base_set" level="8,15" value="1" tags="blockABB"/>
+		<passive_effect name="RecipeTagUnlocked" operation="base_set" level="8,15" value="1" tags="blockABB" />
 	</append>
-
 </configs>
