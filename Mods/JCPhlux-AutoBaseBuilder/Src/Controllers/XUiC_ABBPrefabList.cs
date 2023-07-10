@@ -3,6 +3,7 @@
 public class XUiC_ABBPrefabList : XUiController
 {
     public static string ID = "";
+    private XUiC_SimpleButton btnLoad;
     private XUiC_SimpleButton btnPreview;
     private XUiC_ABBPrefabFileList fileList;
     private bool hasPrefab;
@@ -50,21 +51,25 @@ public class XUiC_ABBPrefabList : XUiController
 
         sliderHorizontalOffset = GetChildById("sliderHorizontalOffset") as XUiC_PhluxSlider;
         sliderHorizontalOffset.Label = Localization.Get("xuiSliderHorizontalOffset");
-        sliderHorizontalOffset.Hide();
+        sliderHorizontalOffset.Disable();
         sliderHorizontalOffset.ValueFormatter = SliderHorizontalOffset_ValueFormatter;
         sliderHorizontalOffset.OnValueChanged += OnSliderHorizontalOffsetChanged;
 
         sliderVerticalOffset = GetChildById("sliderVerticalOffset") as XUiC_PhluxSlider;
         sliderVerticalOffset.Label = Localization.Get("xuiSliderVerticalOffset");
-        sliderVerticalOffset.Hide();
+        sliderVerticalOffset.Disable();
         sliderVerticalOffset.ValueFormatter = SliderVerticalOffset_ValueFormatter;
         sliderVerticalOffset.OnValueChanged += OnSliderVerticalOffsetChanged;
 
         sliderFacing = GetChildById("sliderFacing") as XUiC_PhluxSlider;
         sliderFacing.Label = Localization.Get("xuiSliderFacing");
-        sliderFacing.Hide();
+        sliderFacing.Disable();
         sliderFacing.ValueFormatter = SliderFacing_ValueFormatter;
         sliderFacing.OnValueChanged += OnSliderFacingChanged;
+
+        btnLoad = GetChildById("btnLoad") as XUiC_SimpleButton;
+        btnLoad.Enabled = false;
+        btnLoad.OnPressed += OnLoadPressed;
     }
 
     public override void OnClose()
@@ -72,13 +77,14 @@ public class XUiC_ABBPrefabList : XUiController
         base.OnClose();
         ClearPrefab();
         btnPreview.Enabled = fileList.SelectedEntry != null;
+        btnLoad.Enabled = false;
     }
 
     public void SetTileEntity(TileEntityAutoBaseBuilder tileEntity)
     {
         this.tileEntity = tileEntity;
         hasPrefab = !tileEntity.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None);
-
+        Log.Out($"[AutoBaseBuilder] XUiC_ABBPrefabList.SetTileEntity: hasPrefab={hasPrefab}");
         if (hasPrefab && fileList.SelectByLocation(tileEntity.prefabLocation))
         {
             prefabOffset = tileEntity.prefabOffset;
@@ -87,7 +93,8 @@ public class XUiC_ABBPrefabList : XUiController
             OnPreviewPressed(this, -1);
         }
         else
-            prefabRotation = UtilsHelpers.MirrorSimpleRotation(tileEntity.Rotation);
+            Log.Out("[AutoBaseBuilder] XUiC_ABBPrefabList.SetTileEntity: No prefab selected");
+        prefabRotation = UtilsHelpers.MirrorSimpleRotation(tileEntity.Rotation);
     }
 
     private void ClearPrefab()
@@ -98,9 +105,10 @@ public class XUiC_ABBPrefabList : XUiController
         prefabOffset = Vector3i.zero;
         prefabInstance = null;
         prefabRotation = UtilsHelpers.MirrorSimpleRotation(tileEntity.Rotation);
-        sliderHorizontalOffset.Hide();
-        sliderVerticalOffset.Hide();
-        sliderFacing.Hide();
+        sliderHorizontalOffset.Disable();
+        sliderVerticalOffset.Disable();
+        sliderFacing.Disable();
+        btnLoad.Enabled = false;
     }
 
     private void OnEntryDoubleClicked(XUiC_PrefabFileList.PrefabFileEntry entry)
@@ -138,6 +146,12 @@ public class XUiC_ABBPrefabList : XUiController
         }
         noPreviewLabel.IsVisible = true;
         prefabPreview.IsVisible = false;
+    }
+
+    private void OnLoadPressed(XUiController _sender, int _mouseButton)
+    {
+        tileEntity.SetPrefab(prefabInstance.prefab.location, prefabOffset, prefabRotation);
+        xui.playerUI.windowManager.Close(ID);
     }
 
     private void OnPageNumberChanged(int pageNumber) => fileList.SelectedEntryIndex = fileList.Page * fileList.PageLength;
@@ -182,8 +196,7 @@ public class XUiC_ABBPrefabList : XUiController
 
         UpdateRotation();
 
-        UpdateSelectionBox();
-
+        btnLoad.Enabled = UpdateSelectionBox();
         btnPreview.Enabled = false;
         RefreshBindings(true);
         SetHorizontalSlider();
@@ -229,7 +242,7 @@ public class XUiC_ABBPrefabList : XUiController
 
         Vector3i prefabPos = tileEntity.ToWorldPos() + prefabOffset;
         prefabInstance.SetBoundingBoxPosition(prefabPos);
-        UpdateSelectionBox();
+        btnLoad.Enabled = UpdateSelectionBox();
         SetHorizontalSlider();
     }
 
@@ -260,7 +273,7 @@ public class XUiC_ABBPrefabList : XUiController
         }
 
         prefabInstance.MoveBoundingBox(deltaVec);
-        UpdateSelectionBox();
+        btnLoad.Enabled = UpdateSelectionBox();
     }
 
     private void OnSliderVerticalOffsetChanged(XUiC_PhluxSlider sender)
@@ -279,7 +292,7 @@ public class XUiC_ABBPrefabList : XUiController
 
         Vector3i deltaVec = new(0, yDiff, 0);
         prefabInstance.MoveBoundingBox(deltaVec);
-        UpdateSelectionBox();
+        btnLoad.Enabled = UpdateSelectionBox();
     }
 
     private void SetHorizontalSlider()
@@ -292,10 +305,10 @@ public class XUiC_ABBPrefabList : XUiController
         int halfSize = Mathf.FloorToInt(boundingBoxVal / 2.0f);
         int offsetVal = isNorthSouth ? prefabOffset.x : prefabOffset.z;
         int defaultVal = offsetVal + halfSize;
-        sliderHorizontalOffset.SetAndShow(defaultVal, -halfSize, halfSize, 1);
+        sliderHorizontalOffset.SetAndEnable(defaultVal, -halfSize, halfSize, 1);
     }
 
-    private void SetRotationSlider() => sliderFacing.SetAndShow(prefabRotation, 0, 3, 1);
+    private void SetRotationSlider() => sliderFacing.SetAndEnable(prefabRotation, 0, 3, 1);
 
     private void SetVerticalSlider()
     {
@@ -305,7 +318,7 @@ public class XUiC_ABBPrefabList : XUiController
         int minVal = 1 - (prefabInstance.boundingBoxSize.y + prefabInstance.prefab.yOffset);
         int maxVal = -prefabInstance.prefab.yOffset;
         int defaultVal = prefabOffset.y - prefabInstance.prefab.yOffset;
-        sliderVerticalOffset.SetAndShow(defaultVal, minVal, maxVal, 1);
+        sliderVerticalOffset.SetAndEnable(defaultVal, minVal, maxVal, 1);
     }
 
     private byte SliderFacing_Value() => prefabInstance == null ? (byte)0 : (byte)Mathf.RoundToInt(sliderFacing.Value);

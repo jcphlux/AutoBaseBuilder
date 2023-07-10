@@ -5,6 +5,8 @@ public delegate void XUiEvent_PhluxSliderValueChanged(XUiC_PhluxSlider _sender);
 
 public class XUiC_PhluxSlider : XUiController
 {
+    public Color DisabledLabelColor;
+    public Color EnabledLabelColor;
     public string Tag;
     protected XUiC_PhluxSliderBar barController;
     protected bool initialized;
@@ -16,6 +18,14 @@ public class XUiC_PhluxSlider : XUiController
     protected Func<float, string> valueFormatter;
     protected float width;
     private readonly CachedStringFormatterFloat internalValueFormatter = new("0.00");
+    private Color DisabledBarColor;
+    private Color DisabledBorderColor;
+    private Color DisabledThumbColor;
+    private Color EnabledBarColor;
+    private Color EnabledBorderColor;
+    private Color EnabledThumbColor;
+    private bool isEnabled = true;
+    private XUiV_Label label;
     private float sliderStep = 0.1f;
     private float sliderVal = 0f;
     private float step = 0.1f;
@@ -23,6 +33,25 @@ public class XUiC_PhluxSlider : XUiController
     private bool visible = true;
 
     public event XUiEvent_PhluxSliderValueChanged OnValueChanged;
+
+    public bool Enabled
+    {
+        get
+        {
+            return isEnabled;
+        }
+        set
+        {
+            if (value != isEnabled)
+            {
+                isEnabled = value;
+
+                SetColors();
+
+                IsDirty = true;
+            }
+        }
+    }
 
     public bool IsVisible => Visible;
 
@@ -107,6 +136,8 @@ public class XUiC_PhluxSlider : XUiController
         }
     }
 
+    public void Disable() => Enabled = false;
+
     public override bool GetBindingValue(ref string value, string bindingName)
     {
         switch (bindingName)
@@ -133,6 +164,12 @@ public class XUiC_PhluxSlider : XUiController
     public override void Init()
     {
         base.Init();
+        label = GetChildById("label").ViewComponent as XUiV_Label;
+        if (label != null)
+        {
+            label.Color = EnabledLabelColor;
+        }
+
         thumbController = GetChildById("thumb") as XUiC_PhluxSliderThumb;
         if (thumbController == null)
         {
@@ -150,8 +187,61 @@ public class XUiC_PhluxSlider : XUiController
                 left = (float)barController.ViewComponent.Position.x;
                 width = (float)barController.ViewComponent.Size.x;
                 thumbController.SetDimensions(left, width);
+                SetColors();
             }
         }
+    }
+
+    public override bool ParseAttribute(string name, string value, XUiController _parent)
+    {
+        if (base.ParseAttribute(name, value, _parent))
+            return true;
+        switch (name)
+        {
+            case "enabled_font_color":
+                this.EnabledLabelColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "disabled_font_color":
+                this.DisabledLabelColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "enabled_border_color":
+                this.EnabledBorderColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "disabled_border_color":
+                this.DisabledBorderColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "enabled_bar_color":
+                this.EnabledBarColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "disabled_bar_color":
+                this.DisabledBarColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "enabled_thumb_color":
+                this.EnabledThumbColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "disabled_thumb_color":
+                this.DisabledThumbColor = StringParsers.ParseColor32(value);
+                break;
+
+            case "enabled":
+                this.Enabled = StringParsers.ParseBool(value);
+                break;
+
+            case "visable":
+                this.visible = StringParsers.ParseBool(value);
+                break;
+
+            default:
+                return false;
+        }
+        return true;
     }
 
     public void Reset() => initialized = false;
@@ -162,6 +252,12 @@ public class XUiC_PhluxSlider : XUiController
         maxVal = Mathf.Max(min, max);
         Step = step;
         Value = value;
+    }
+
+    public void SetAndEnable(float value = 0f, float min = 0f, float max = 1f, float step = 0.1f)
+    {
+        Enabled = true;
+        Set(value, min, max, step);
     }
 
     public void SetAndShow(float value = 0f, float min = 0f, float max = 1f, float step = 0.1f)
@@ -183,6 +279,9 @@ public class XUiC_PhluxSlider : XUiController
 
     internal void SliderValueChanged(float _newVal)
     {
+        if (!Enabled || (double)_newVal == (double)SliderValue)
+            return;
+
         SliderValue = _newVal;
         if (OnValueChanged == null)
             return;
@@ -190,4 +289,26 @@ public class XUiC_PhluxSlider : XUiController
     }
 
     internal void UpdateThumb() => thumbController.ThumbPosition = SliderValue;
+
+    private void SetColors()
+    {
+        if (label != null)
+        {
+            label.Color = (Enabled ? EnabledLabelColor : DisabledLabelColor);
+        }
+
+        if (barController != null)
+        {
+            barController.background.Color = (Enabled ? EnabledBarColor : DisabledBarColor);
+            barController.border.Color = (Enabled ? EnabledBorderColor : DisabledBorderColor);
+            barController.background.Enabled = Enabled;
+        }
+
+        if (thumbController != null)
+        {
+            thumbController.background.Color = (Enabled ? EnabledThumbColor : DisabledThumbColor);
+            thumbController.border.Color = (Enabled ? EnabledBorderColor : DisabledBorderColor);
+            thumbController.background.Enabled = Enabled;
+        }
+    }
 }

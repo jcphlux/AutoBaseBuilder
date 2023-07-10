@@ -1,13 +1,17 @@
 ﻿<configs patcher-version="4">
 	<append xpath="/controls">
 		<phluxslider depth="1" pos="0,0" width="200">
-			<rect name="${name}" depth="${depth}" controller="PhluxSlider, JCPhlux.Controls" pos="${pos}" width="${width}" height="62">
-				<label depth="1" pos="0, -6"  width="${width}" height="28" text="{name}: {value}" visible="{visible}" />
+			<rect name="${name}" depth="${depth}" controller="PhluxSlider, JCPhlux.Controls" pos="${pos}" width="${width}" height="62"
+				  enabled_font_color="[labelColor]" disabled_font_color="[disabledLabelColor]"
+				  enabled_border_color="[borderColor]" disabled_border_color="[transparent]"
+				  enabled_bar_color="[mediumGrey]" disabled_bar_color="[lightGrey]"
+				  enabled_thumb_color="[lightGrey]" disabled_thumb_color="[black]">
+				<label name="label" depth="1" pos="0, -6"  width="${width}" height="28" text="{name}: {value}" visible="{visible}" />
 				<rect pos="2,-34">
 					<sprite name="bar" controller="PhluxSliderBar, JCPhlux.Controls" depth="1" pos="4, -5" color="[mediumGrey]" width="${width-12}" height="20" type="sliced" style="press, scroll" visible="{visible}" />
-					<sprite depth="2" pos="4, -5" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false" width="${width-12}" height="20" foregroundlayer="true" visible="{visible}" />
+					<sprite name="barBorder" depth="2" pos="4, -5" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false" width="${width-12}" height="20" foregroundlayer="true" visible="{visible}" />
 					<sprite name="thumb" controller="PhluxSliderThumb, JCPhlux.Controls" depth="2" pos="${width-8}, -15" color="[lightGrey]" width="16" height="30" style="press, hover, drag, scroll" pivot="center" visible="{visible}">
-						<sprite depth="2" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false" width="16" foregroundlayer="true" height="30" pivot="center" />
+						<sprite name="thumbBorder" depth="1" sprite="menu_empty3px" color="[black]" type="sliced" fillcenter="false" width="16" foregroundlayer="true" height="30" pivot="center" />
 					</sprite>
 				</rect>
 			</rect>

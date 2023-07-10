@@ -2,7 +2,9 @@
 
 public class XUiC_PhluxSliderBar : XUiController
 {
+    internal XUiV_Sprite border;
     private XUiC_PhluxSlider sliderController;
+    internal XUiV_Sprite background => viewComponent as XUiV_Sprite;
 
     public override bool GetBindingValue(ref string value, string bindingName)
     {
@@ -22,10 +24,13 @@ public class XUiC_PhluxSliderBar : XUiController
     {
         base.Init();
         sliderController = GetParentByType<XUiC_PhluxSlider>();
+        border = (XUiV_Sprite)sliderController.GetChildById("barBorder").ViewComponent;
     }
 
     protected override void OnPressed(int _mouseButton)
     {
+        if (!sliderController.Enabled)
+            return;
         Vector2i mouseXuiPosition = xui.GetMouseXUIPosition();
         XUiController xuiController = this;
         Vector2i position = xuiController.ViewComponent.Position;
@@ -41,6 +46,8 @@ public class XUiC_PhluxSliderBar : XUiController
 
     protected override void OnScrolled(float _delta)
     {
+        if (!sliderController.Enabled)
+            return;
         base.OnScrolled(_delta);
         sliderController.SliderValueChanged(sliderController.SliderValue + Mathf.Clamp(_delta, -sliderController.SliderStep, sliderController.SliderStep));
     }

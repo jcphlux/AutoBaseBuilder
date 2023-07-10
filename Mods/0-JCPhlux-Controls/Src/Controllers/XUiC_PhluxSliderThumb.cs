@@ -2,6 +2,7 @@
 
 public class XUiC_PhluxSliderThumb : XUiController
 {
+    internal XUiV_Sprite border;
     private bool isDragging;
     private bool isOver;
     private Vector2i lastMousePos = new(-100000, -100000);
@@ -20,6 +21,8 @@ public class XUiC_PhluxSliderThumb : XUiController
             ViewComponent.UiTransform.localPosition = new Vector3((int)((double)value * width + left), ViewComponent.Position.y, 0.0f);
         }
     }
+
+    internal XUiV_Sprite background => viewComponent as XUiV_Sprite;
 
     public override bool GetBindingValue(ref string value, string bindingName)
     {
@@ -41,6 +44,7 @@ public class XUiC_PhluxSliderThumb : XUiController
         ViewComponent.EventOnHover = true;
         sliderController = GetParentByType<XUiC_PhluxSlider>();
         sliderBarController = sliderController.GetChildByType<XUiC_PhluxSliderBar>();
+        border = (XUiV_Sprite)GetChildById("thumbBorder").ViewComponent;
     }
 
     public void SetDimensions(float _left, float _width)
@@ -51,6 +55,8 @@ public class XUiC_PhluxSliderThumb : XUiController
 
     protected override void OnDragged(EDragType _dragType, Vector2 _mousePositionDelta)
     {
+        if (!sliderController.Enabled)
+            return;
         base.OnDragged(_dragType, _mousePositionDelta);
         if (!isDragging && !isOver)
             return;
@@ -77,12 +83,16 @@ public class XUiC_PhluxSliderThumb : XUiController
 
     protected override void OnHovered(bool _isOver)
     {
+        if (!sliderController.Enabled)
+            return;
         base.OnHovered(_isOver);
         isOver = _isOver;
     }
 
     protected override void OnScrolled(float _delta)
     {
+        if (!sliderController.Enabled)
+            return;
         base.OnScrolled(_delta);
         if (sliderBarController == null)
             return;

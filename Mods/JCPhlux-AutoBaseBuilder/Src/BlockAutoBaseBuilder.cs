@@ -39,14 +39,14 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
         else
             cmds[cmds.Length - 2].enabled = false;
 
-        string prefablist_cmd = "select_abb_prefab";
-        if (!tileEntity.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None))
-        {
-            prefablist_cmd = Localization.Get("blockcommand_selected_abb_prefab");
-            if (string.IsNullOrEmpty(prefablist_cmd)) prefablist_cmd = "Selected Prefab {0}";
-            prefablist_cmd = string.Format(prefablist_cmd, tileEntity.prefabLocation.Name);
-        }
-        cmds[cmds.Length - 3] = new BlockActivationCommand(prefablist_cmd, "map_town", true);
+        //string prefablist_cmd = "select_abb_prefab";
+        //if (!tileEntity.prefabLocation.Equals(PathAbstractions.AbstractedLocation.None))
+        //{
+        //    prefablist_cmd = Localization.Get("blockcommand_selected_abb_prefab");
+        //    if (string.IsNullOrEmpty(prefablist_cmd)) prefablist_cmd = "Selected Prefab {0}";
+        //    prefablist_cmd = string.Format(prefablist_cmd, tileEntity.prefabLocation.Name);
+        //}
+        cmds[cmds.Length - 3] = new BlockActivationCommand("select_abb_prefab", "map_town", true);
 
         return cmds;
     }
