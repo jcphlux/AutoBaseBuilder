@@ -2,8 +2,8 @@ using System;
 
 public class BlockAutoBaseBuilder : BlockSecureLoot
 {
-    private float BuildSpeed = 200f;
-    private Vector2i LootSize = new Vector2i(8, 4);
+    private float BuildSpeed = 5;
+    private Vector2i LootSize = new(8, 4);
 
     //private float BoundHelperSize = 2.59f;
     private float TakeDelay = 20f;
@@ -58,28 +58,9 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
             : StringParsers.ParseFloat(Properties.Values["TakeDelay"]);
         BuildSpeed = !Properties.Values.ContainsKey("BuildSpeed") ? BuildSpeed
             : StringParsers.ParseFloat(Properties.Values["BuildSpeed"]);
+        AllowedRotations = EBlockRotationClasses.Basic90;
+        Log.Out("Allowed rotations: " + AllowedRotations.ToString());
     }
-
-    //public override void OnBlockLoaded(
-    //    WorldBase _world,
-    //    int _clrIdx,
-    //    Vector3i _blockPos,
-    //    BlockValue _blockValue)
-    //{
-    //    base.OnBlockLoaded(_world, _clrIdx, _blockPos, _blockValue);
-    //    if (GameManager.IsDedicatedServer) return;
-    //    if (_world.GetTileEntity(_clrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
-    //    {
-    //        Transform boundsHelper = LandClaimBoundsHelper.GetBoundsHelper(_blockPos.ToVector3());
-    //        if (boundsHelper != null)
-    //        {
-    //            boundsHelper.localScale = new Vector3(BoundHelperSize, BoundHelperSize, BoundHelperSize);
-    //            boundsHelper.localPosition = new Vector3(_blockPos.x + 0.5f, _blockPos.y + 0.5f, _blockPos.z + 0.5f);
-    //            //tileEntityLandAutoRepair.BoundsHelper = boundsHelper;
-    //            //tileEntityLandAutoRepair.ResetBoundHelper(Color.gray);
-    //        }
-    //    }
-    //}
 
     //public override void OnBlockUnloaded(
     //    WorldBase _world,
@@ -180,6 +161,26 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
         }
     }
 
+    //public override void OnBlockLoaded(
+    //    WorldBase _world,
+    //    int _clrIdx,
+    //    Vector3i _blockPos,
+    //    BlockValue _blockValue)
+    //{
+    //    base.OnBlockLoaded(_world, _clrIdx, _blockPos, _blockValue);
+    //    if (GameManager.IsDedicatedServer) return;
+    //    if (_world.GetTileEntity(_clrIdx, _blockPos) is TileEntityAutoBaseBuilder tileEntityLandAutoRepair)
+    //    {
+    //        Transform boundsHelper = LandClaimBoundsHelper.GetBoundsHelper(_blockPos.ToVector3());
+    //        if (boundsHelper != null)
+    //        {
+    //            boundsHelper.localScale = new Vector3(BoundHelperSize, BoundHelperSize, BoundHelperSize);
+    //            boundsHelper.localPosition = new Vector3(_blockPos.x + 0.5f, _blockPos.y + 0.5f, _blockPos.z + 0.5f);
+    //            //tileEntityLandAutoRepair.BoundsHelper = boundsHelper;
+    //            //tileEntityLandAutoRepair.ResetBoundHelper(Color.gray);
+    //        }
+    //    }
+    //}
     public override void OnBlockAdded(
         WorldBase _world,
         Chunk _chunk,
@@ -240,6 +241,26 @@ public class BlockAutoBaseBuilder : BlockSecureLoot
 
         base.OnBlockEntityTransformAfterActivated(_world, _blockPos, _cIdx, _blockValue, _ebcd);
     }
+
+    //public new void RotateHoldingBlock(
+    //                    ItemClassBlock.ItemBlockInventoryData _blockInventoryData,
+    //bool _increaseRotation,
+    //bool _playSoundOnRotation = true)
+    //{
+    //    Log.Out("RotateHoldingBlock" + _blockInventoryData.mode);
+    //    if (_blockInventoryData.mode == BlockPlacement.EnumRotationMode.Auto)
+    //        _blockInventoryData.mode = BlockPlacement.EnumRotationMode.Simple;
+    //    BlockValue blockValue1 = _blockInventoryData.itemValue.ToBlockValue() with
+    //    {
+    //        rotation = _blockInventoryData.rotation
+    //    };
+    //    BlockValue blockValue2 = this.BlockPlacementHelper.OnPlaceBlock(_blockInventoryData.mode, _blockInventoryData.localRot, (WorldBase)_blockInventoryData.world, blockValue1, _blockInventoryData.hitInfo.hit, _blockInventoryData.holdingEntity.position).blockValue;
+    //    int rotation = (int)_blockInventoryData.rotation;
+    //    _blockInventoryData.rotation = this.BlockPlacementHelper.LimitRotation(_blockInventoryData.mode, ref _blockInventoryData.localRot, _blockInventoryData.hitInfo.hit, _increaseRotation, blockValue2, blockValue2.rotation);
+    //    if (!_playSoundOnRotation || rotation == (int)_blockInventoryData.rotation)
+    //        return;
+    //    _blockInventoryData.holdingEntity.PlayOneShot("rotateblock");
+    //}
 
     //public override void OnBlockRemoved(
     //    WorldBase _world,

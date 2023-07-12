@@ -112,29 +112,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Src\ABBPrefabInstance.cs" />
-    <Compile Include="Src\BlockAutoBaseBuilder.cs" />
-    <Compile Include="Src\Controllers\XUiC_ABBPrefabList.cs" />
-    <Compile Include="Src\JCPhluxAutoBaseBuilder.cs" />
-    <Compile Include="Src\TileEntityAutoBaseBuilder.cs" />
-    <Compile Include="Src\Controllers\XUiC_ABBPrefabFileList.cs" />
+    <Compile Include="Scripts\ABBPrefabInstance.cs" />
+    <Compile Include="Scripts\BlockAutoBaseBuilder.cs" />
+    <Compile Include="Scripts\Controllers\XUiC_ABBPrefabList.cs" />
+    <Compile Include="Harmony\JCPhluxAutoBaseBuilder.cs" />
+    <Compile Include="Scripts\TileEntityAutoBaseBuilder.cs" />
+    <Compile Include="Scripts\Controllers\XUiC_ABBPrefabFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Src\Utils\ModXmlPatcher.cs" />
-    <Compile Include="Src\Utils\UtilsHelpers.cs" />
+    <Compile Include="Scripts\Utils\ModXmlPatcher.cs" />
+    <Compile Include="Scripts\Utils\UtilsHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\blocks.a21.xml" />
-    <Content Include="Config\blocks.a20.xml" />
     <Content Include="Config\blocks.ulm.xml" />
     <Content Include="Config\blocks.xml" />
     <Content Include="Config\items.xml" />
     <Content Include="Config\Localization.txt" />
     <Content Include="Config\loot.xml" />
-    <Content Include="Config\progression.a20.xml" />
     <Content Include="Config\progression.a21.xml" />
     <Content Include="Config\progression.xml" />
     <Content Include="Config\recipes.a21.xml" />
-    <Content Include="Config\recipes.a20.xml" />
     <Content Include="Config\recipes.ulm.xml" />
     <Content Include="Config\recipes.xml" />
     <Content Include="Config\XUi\xui.xml" />

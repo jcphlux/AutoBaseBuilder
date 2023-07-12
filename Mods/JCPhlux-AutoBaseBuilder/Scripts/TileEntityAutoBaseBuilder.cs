@@ -9,7 +9,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
     // The position of the block being built
     public Vector3i buildPosition = Vector3i.zero;
 
-    public float buildSpeed = 750f;
+    public float buildSpeed = 5;
 
     // Flag only for server side code
     public bool isAccessed;
@@ -82,12 +82,13 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
         return having;
     }
 
-    public override TileEntityType GetTileEntityType() => (TileEntityType)242;
+    public override TileEntityType GetTileEntityType() => (TileEntityType)189;
 
     public override void read(PooledBinaryReader _br, TileEntity.StreamModeRead _eStreamMode)
     {
         base.read(_br, _eStreamMode);
         isOn = _br.ReadBoolean();
+        Log.Out("_eStreamMode: " + _eStreamMode.ToString());
         switch (_eStreamMode)
         {
             case TileEntity.StreamModeRead.Persistency:
@@ -99,7 +100,9 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
                     break;
 
                 string prefabName = _br.ReadString();
+                Log.Out("prefabName: " + prefabName);
                 prefabLocation = PathAbstractions.PrefabsSearchPaths.GetLocation(prefabName);
+                Log.Out("prefabLocation: " + prefabLocation.ToString());
                 prefabRotation = _br.ReadByte();
 
                 prefabOffset.x = _br.ReadInt32();
@@ -195,9 +198,12 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 
     public void SetPrefab(PathAbstractions.AbstractedLocation location, Vector3i offset, byte rotation)
     {
-        if (prefabLocation == location && prefabOffset == offset && prefabRotation == rotation)
+        IsOn = true;
+        if (prefabLocation.Equals(location) && prefabOffset == offset && prefabRotation == rotation)
+        {
+            IsOn = true;
             return;
-
+        }
         prefabLocation = location;
         prefabOffset = offset;
         prefabRotation = rotation;
@@ -290,6 +296,11 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 
     public void TickBuild(World world)
     {
+        if (buildSpeed-- <= 0)
+        {
+            buildSpeed = 5;
+            Log.Out("TickBuild");
+        }
         //WorldBiomeProviderFromImage.GetBiomeAt(int x, int z)
         //WorldBiomeProviderFromImage
         //    Vector3i worldPosI = ToWorldPos();
@@ -392,6 +403,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
     {
         base.write(_bw, _eStreamMode);
         _bw.Write(isOn);
+        Log.Out("_eStreamMode: " + _eStreamMode.ToString());
         switch (_eStreamMode)
         {
             case TileEntity.StreamModeWrite.Persistency:
@@ -403,6 +415,7 @@ public class TileEntityAutoBaseBuilder : TileEntitySecureLootContainer
 
             case TileEntity.StreamModeWrite.ToClient:
                 bool hasPrefab = !prefabLocation.Equals(PathAbstractions.AbstractedLocation.None);
+                Log.Out("hasPrefab: " + hasPrefab);
                 _bw.Write(hasPrefab);
                 if (!hasPrefab)
                     break;

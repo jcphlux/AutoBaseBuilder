@@ -5,7 +5,7 @@
 		<append xpath="/lootcontainers/lootgroup[@name='booksElectrical']">
 			<item name="blockABBBlueprint" loot_prob_template="medLow" />
 		</append>
-		<append xpath="/lootcontainers/lootgroup[@name='booksToolsT2']">
+		<append xpath="/lootcontainers/lootgroup[@name='booksToolsT1']">
 			<item name="blockABBBlueprint" loot_prob_template="low" />
 		</append>
 	</modif>

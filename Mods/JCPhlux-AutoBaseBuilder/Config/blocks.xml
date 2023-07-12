@@ -2,30 +2,45 @@
 
 	<append xpath="/blocks">
 		<block name="blockABB">
-
-			<property name="CreativeMode" value="Player" />
-			<property name="Tags" value="safes,hardenedSafe" />
+			<!-- Class -->
 			<property name="Class" value="AutoBaseBuilder, JCPhlux.AutoBaseBuilder" />
+			<property name="LootList" value="storageCrate" />
+			<!-- UI_Info -->
+			<property name="CreativeMode" value="Player" />
+			<property name="DisplayType" value="blockHardened" />
+			<property name="DescriptionKey" value="blockABBDesc" />
 			<property name="CustomIcon" value="AutoBaseBuilder" />
+			<!-- Visual -->
 			<property name="Material" value="Mmetal" />
-			<property name="StabilitySupport" value="true" />
 			<property name="Shape" value="ModelEntity" />
 			<property name="Model" value="#@modfolder:Resources/AutoBaseBuilder.unity3d?AutoBaseBuilder" />
-			<property name="IsTerrainDecoration" value="false" />
+			<property name="ImposterDontBlock" value="true" />
+			<property name="WaterFlow" value="permitted" />
+			<property name="ParticleName" value="p_electric_shock" />
+			<property name="ParticleOffset" value="0,0.4,0.5" />
+			<!-- Placement -->
+			<!--<property name="AllowedRotations" value="Basic90" />-->
+			<property name="OnlySimpleRotations" value="true" />
 			<property name="Collide" value="movement,melee,bullet,arrow,rocket" />
-			<property name="LootList" value="storageCrate" />
-			<property name="LPHardnessScale" value="8" />
-			<property name="Group" value="Storage,Building,advBuilding,Blocks,Player" />
-			<property name="DescriptionKey" value="blockABBDesc" />
+			<property name="IsTerrainDecoration" value="false" />
+			<property name="StabilitySupport" value="true" />
+			<!-- Value -->
 			<property name="EconomicValue" value="350" />
 			<property name="EconomicBundleSize" value="5" />
-			<property name="Stacknumber" value="3" />
-			<property name="FilterTags" value="floot" />
-			<property name="DisplayType" value="blockHardened" />
-
+			<property name="SellableToTrader" value="false" />
+			<property name="TraderStageTemplate" value="midTier0" />
+			<property name="LPHardnessScale" value="8" />
+			<!-- Interaction -->
 			<property name="CanPickup" value="true" />
-			<property name="TakeDelay" value="20" />
-			<property name="BuildSpeed" value="200" />
+			<property name="BuildSpeed" value="5" />
+			<property name="HeatMapStrength" value="5" />
+			<property name="HeatMapTime" value="5000" />
+			<property name="HeatMapFrequency" value="1000" />
+			<property name="TakeDelay" value="15" />
+			<!-- Sorting -->
+			<property name="Group" value="Storage,Building,advBuilding,Blocks,Player" />
+			<property name="FilterTags" value="MC_playerBlocks,SC_decor" />
+			<property name="Tags" value="safes,hardenedSafe" />
 		</block>
 	</append>
 

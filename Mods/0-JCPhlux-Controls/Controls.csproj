@@ -93,11 +93,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Src\Controllers\XUiC_PhluxSlider.cs" />
-    <Compile Include="Src\Controllers\XUiC_PhluxSliderBar.cs" />
-    <Compile Include="Src\Controllers\XUiC_PhluxSliderThumb.cs" />
-    <Compile Include="Src\JCPhluxControls.cs" />
-    <Compile Include="Src\Utils\ModXmlPatcher.cs" />
+    <Compile Include="Scripts\Controllers\XUiC_PhluxSlider.cs" />
+    <Compile Include="Scripts\Controllers\XUiC_PhluxSliderBar.cs" />
+    <Compile Include="Scripts\Controllers\XUiC_PhluxSliderThumb.cs" />
+    <Compile Include="Harmony\JCPhluxControls.cs" />
+    <Compile Include="Scripts\Utils\ModXmlPatcher.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
